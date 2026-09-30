@@ -1,0 +1,46 @@
+{
+ "model": "Qwen/Qwen2.5-0.5B-Instruct",
+ "shape": {
+  "hidden": 896,
+  "intermediate": 4864,
+  "layers": 24,
+  "vocab": 151936,
+  "kv_dim": 128
+ },
+ "batch": 2,
+ "rows_per_step": 4,
+ "seq_len": 512,
+ "tokens_per_step": 2048,
+ "layer_params": 14912384,
+ "embed_params": 136134656,
+ "adapter_params": 2162688,
+ "terms_GB": {
+  "layer_buffers (stream_buffers x one fp16 layer)": 0.06,
+  "embeddings / tied lm_head (fp16, resident)": 0.272,
+  "lora weights+grads+adam (16 B/param)": 0.035,
+  "dpo ref adapter copy (fp32)": 0.009,
+  "checkpointed layer inputs (L x tokens x h x 2B)": 0.088,
+  "one layer recompute (attn+mlp, ~ tokens x (4h + 3i) x 2B)": 0.074,
+  "policy logits + loss (tokens x vocab x 14 B)": 4.356,
+  "ref pass (not counted at peak, transient)": 0.0
+ },
+ "first_pass_peak_GB": 4.894,
+ "correction_ref_pass_overlaps_policy_graph_GB (tokens x vocab x 4 B)": 1.245,
+ "predicted_allocator_peak_GB": 6.139,
+ "predicted_allocator_peak_GiB": 5.717,
+ "logit_bytes_per_element_implied": 18,
+ "not_in_allocator_peak": {
+  "cuda_context_and_kernels": "~0.3-0.5 GB, visible to nvidia-smi only",
+  "allocator_cache (reserved - allocated)": "fragmentation, visible to nvidia-smi only"
+ },
+ "host_GB": {
+  "pinned host RAM for streamed base (L x layer fp16)": 0.716
+ },
+ "measured": {
+  "soup_logged_peak_raw": "5.6/14.6 GB",
+  "soup_logged_peak_as_GB": 6.01,
+  "nvidia_smi_peak_MiB": 9391.0,
+  "nvidia_smi_peak_GB": 9.85,
+  "nvidia_smi_samples": 948
+ }
+}

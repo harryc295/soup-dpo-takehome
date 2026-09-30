@@ -1,0 +1,31 @@
+2026-09-30T04:10:51.495Z $ python prepare_data.py
+2026-09-30T04:10:53.335Z Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+2026-09-30T04:11:00.827Z 
+2026-09-30T04:11:01.045Z Generating train split:   0%|          | 0/12859 [00:00<?, ? examples/s]
+2026-09-30T04:11:01.191Z Generating train split:   8%|▊         | 1000/12859 [00:00<00:02, 4612.05 examples/s]
+2026-09-30T04:11:01.312Z Generating train split:  39%|███▉      | 5000/12859 [00:00<00:00, 15661.70 examples/s]
+2026-09-30T04:11:01.478Z Generating train split:  70%|██████▉   | 9000/12859 [00:00<00:00, 22058.66 examples/s]
+2026-09-30T04:11:01.499Z Generating train split:  93%|█████████▎| 12000/12859 [00:00<00:00, 20397.13 examples/s]
+2026-09-30T04:11:01.501Z Generating train split: 100%|██████████| 12859/12859 [00:00<00:00, 19137.90 examples/s]
+2026-09-30T04:11:04.285Z {
+2026-09-30T04:11:04.287Z   "source": "argilla/distilabel-intel-orca-dpo-pairs",
+2026-09-30T04:11:04.287Z   "seed": 0,
+2026-09-30T04:11:04.289Z   "raw_rows": 500,
+2026-09-30T04:11:04.290Z   "raw_status_counts": {
+2026-09-30T04:11:04.293Z     "tie": 168,
+2026-09-30T04:11:04.293Z     "unchanged": 265,
+2026-09-30T04:11:04.295Z     "swapped": 67
+2026-09-30T04:11:04.297Z   },
+2026-09-30T04:11:04.297Z   "rows_scanned_for_500_clean": 741,
+2026-09-30T04:11:04.298Z   "dropped": {
+2026-09-30T04:11:04.301Z     "tie": 237,
+2026-09-30T04:11:04.302Z     "identical": 0,
+2026-09-30T04:11:04.304Z     "empty": 0,
+2026-09-30T04:11:04.306Z     "gsm8k_train_overlap": 4
+2026-09-30T04:11:04.306Z   },
+2026-09-30T04:11:04.307Z   "train_rows": 400,
+2026-09-30T04:11:04.308Z   "heldout_rows": 100,
+2026-09-30T04:11:04.309Z   "lenbal_rows": 400,
+2026-09-30T04:11:04.313Z   "lenbal_rows_shared_with_train": 348
+2026-09-30T04:11:04.314Z }
+2026-09-30T04:11:04.570Z [exit code 0]

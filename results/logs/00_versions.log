@@ -1,0 +1,8 @@
+2026-09-30T04:10:02.728Z $ python -c "import torch,transformers,trl,peft,soup_cli;print('torch',torch.__version__,'transformers',transformers.__version__,'trl',trl.__version__,'peft',peft.__version__,'soup',soup_cli.__version__)"
+2026-09-30T04:10:28.783Z torch 2.11.0+cu128 transformers 5.16.1 trl 0.29.1 peft 0.20.0 soup 0.75.1
+2026-09-30T04:10:32.774Z [exit code 0]
+2026-09-30T04:10:32.777Z $ python -c "import torch;from soup_cli.utils.gpu import bf16_fp16_flags;print(torch.cuda.get_device_name(0), torch.cuda.get_device_capability(0));print('bf16 in hardware:', torch.cuda.is_bf16_supported(including_emulation=False));print('soup precision (bf16, fp16):', bf16_fp16_flags('cuda'))"
+2026-09-30T04:10:34.602Z Tesla T4 (7, 5)
+2026-09-30T04:10:34.603Z bf16 in hardware: False
+2026-09-30T04:10:34.605Z soup precision (bf16, fp16): (False, True)
+2026-09-30T04:10:35.034Z [exit code 0]

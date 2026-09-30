@@ -12,3 +12,6 @@ results.zip
 results_core.zip
 .impeccable/
 local_full*
+local_full*
+*.db-shm
+*.db-wal

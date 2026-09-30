@@ -1,0 +1,32 @@
+2026-09-30T04:52:30.415Z $ pip install -q "soup-cli[data]==0.75.1" --ignore-requires-python
+2026-09-30T04:52:31.621Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 107.2/107.2 kB 9.2 MB/s eta 0:00:00
+2026-09-30T04:52:33.419Z [exit code 0]
+2026-09-30T04:52:33.421Z $ soup data lint data/raw_500.jsonl --format dpo --model Qwen/Qwen2.5-0.5B-Instruct -o results/lint_raw_with_datasketch.json
+2026-09-30T04:52:41.779Z Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+2026-09-30T04:52:46.480Z                               soup data lint (dpo)                              
+2026-09-30T04:52:46.481Z ┏━━━━━━━━━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━┓
+2026-09-30T04:52:46.483Z ┃ Check           ┃ Verdict ┃ Message                ┃ Evidence                ┃
+2026-09-30T04:52:46.485Z ┡━━━━━━━━━━━━━━━━━╇━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━┩
+2026-09-30T04:52:46.486Z │ length_bias     │ MINOR   │ effect size (Cohen's   │ mean chosen=160.4, mean │
+2026-09-30T04:52:46.488Z │                 │         │ d) = -0.355 (rejected  │ rejected=219.0          │
+2026-09-30T04:52:46.490Z │                 │         │ longer than chosen);   │                         │
+2026-09-30T04:52:46.491Z │                 │         │ chosen is longer in    │                         │
+2026-09-30T04:52:46.492Z │                 │         │ 29.4% of rows          │                         │
+2026-09-30T04:52:46.494Z │ identical_pairs │ OK      │ 0/500 rows (0.0%) have │                         │
+2026-09-30T04:52:46.495Z │                 │         │ chosen == rejected     │                         │
+2026-09-30T04:52:46.497Z │                 │         │ (zero preference       │                         │
+2026-09-30T04:52:46.497Z │                 │         │ signal)                │                         │
+2026-09-30T04:52:46.499Z │ near_duplicates │ OK      │ 0/500 rows (0.0%) have │ threshold=0.85          │
+2026-09-30T04:52:46.500Z │                 │         │ a near-duplicate       │                         │
+2026-09-30T04:52:46.501Z │                 │         │ elsewhere in the       │                         │
+2026-09-30T04:52:46.503Z │                 │         │ dataset                │                         │
+2026-09-30T04:52:46.506Z │ prompt_leak     │ OK      │ 0/500 rows (0.0%) have │ min_prompt_len=40       │
+2026-09-30T04:52:46.508Z │                 │         │ the prompt echoed      │                         │
+2026-09-30T04:52:46.509Z │                 │         │ verbatim inside the    │                         │
+2026-09-30T04:52:46.511Z │                 │         │ completion             │                         │
+2026-09-30T04:52:46.512Z └─────────────────┴─────────┴────────────────────────┴─────────────────────────┘
+2026-09-30T04:52:46.513Z ╭────────── overall ───────────╮
+2026-09-30T04:52:46.514Z │ MINOR — 500/500 rows scanned │
+2026-09-30T04:52:46.516Z ╰──────────────────────────────╯
+2026-09-30T04:52:46.516Z Wrote results/lint_raw_with_datasketch.json
+2026-09-30T04:52:47.811Z [exit code 0]

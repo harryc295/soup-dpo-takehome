@@ -1,0 +1,5 @@
+2026-09-30T04:32:07.420Z $ python make_ship_inputs.py --adapter out-dpo
+2026-09-30T04:32:09.044Z task_eval.jsonl: 18 tasks
+2026-09-30T04:32:09.067Z ctrl-zero/ written
+2026-09-30T04:32:09.091Z ctrl-random/ written
+2026-09-30T04:32:09.499Z [exit code 0]

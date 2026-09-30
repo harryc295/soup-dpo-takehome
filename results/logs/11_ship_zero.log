@@ -1,0 +1,21 @@
+2026-09-30T04:38:58.487Z $ soup ship --base Qwen/Qwen2.5-0.5B-Instruct --adapter ctrl-zero --task-eval task_eval.jsonl --general-suite mini_arithmetic --device cuda -o results/ship_zero.json
+2026-09-30T04:38:59.449Z Live eval: loading base/tuned at full precision (bfloat16); pass --config to 
+2026-09-30T04:38:59.451Z reuse the training run's own quantization.
+2026-09-30T04:39:06.711Z Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+2026-09-30T04:39:08.329Z [transformers] `torch_dtype` is deprecated! Use `dtype` instead!
+2026-09-30T04:45:53.882Z ╭───────────────────────────────── soup ship ──────────────────────────────────╮
+2026-09-30T04:45:53.886Z │ DON'T SHIP                                                                   │
+2026-09-30T04:45:53.889Z │ Leg 1 task win (metric): 0.4444 -> 0.4444  [no win]                          │
+2026-09-30T04:45:53.889Z │                                                                              │
+2026-09-30T04:45:53.890Z │ Leg 2 general suite (threshold 5.00%)                                        │
+2026-09-30T04:45:53.892Z │ ┏━━━━━━━━━━━━━━━━━┳━━━━━━━━┳━━━━━━━━┳━━━━━━━━━┳━━━━━━━━━┓                    │
+2026-09-30T04:45:53.895Z │ ┃ Benchmark       ┃   Base ┃  Tuned ┃       Δ ┃ Verdict ┃                    │
+2026-09-30T04:45:53.896Z │ ┡━━━━━━━━━━━━━━━━━╇━━━━━━━━╇━━━━━━━━╇━━━━━━━━━╇━━━━━━━━━┩                    │
+2026-09-30T04:45:53.897Z │ │ mini_arithmetic │ 1.0000 │ 1.0000 │ +0.0000 │ ok      │                    │
+2026-09-30T04:45:53.898Z │ └─────────────────┴────────┴────────┴─────────┴─────────┘                    │
+2026-09-30T04:45:53.898Z │                                                                              │
+2026-09-30T04:45:53.899Z │ Task did not improve (metric: 0.4444 -> 0.4444, tied). A strict win is       │
+2026-09-30T04:45:53.900Z │ required to ship.                                                            │
+2026-09-30T04:45:53.900Z ╰──────────────────────────────────────────────────────────────────────────────╯
+2026-09-30T04:45:53.902Z Wrote results/ship_zero.json
+2026-09-30T04:45:55.983Z [exit code 2]

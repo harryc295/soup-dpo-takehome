@@ -1,0 +1,37 @@
+2026-09-30T04:27:58.903Z $ python verify_training.py --adapter out-lenbal --train data/train_lenbal.jsonl --out results/verify_lenbal.json
+2026-09-30T04:28:08.695Z Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+2026-09-30T04:28:12.580Z == A. weight checks (saved adapter on disk)
+2026-09-30T04:28:12.717Z {
+2026-09-30T04:28:12.717Z  "lora_B_tensors": 96,
+2026-09-30T04:28:12.719Z  "expected_tensors": 96,
+2026-09-30T04:28:12.719Z  "missing": [],
+2026-09-30T04:28:12.721Z  "zero_B_tensors": [],
+2026-09-30T04:28:12.722Z  "min_delta_rel": 0.0006946409121155739,
+2026-09-30T04:28:12.724Z  "max_delta_rel": 0.005802804604172707,
+2026-09-30T04:28:12.725Z  "ref_adapter_is_zero": true
+2026-09-30T04:28:12.728Z }
+2026-09-30T04:28:12.730Z mean |dW|/|W| per layer: 0:2.72e-03 1:3.34e-03 2:3.54e-03 3:3.08e-03 4:3.03e-03 5:2.96e-03 6:3.10e-03 7:2.94e-03 8:2.89e-03 9:2.94e-03 10:3.00e-03 11:3.17e-03 12:3.07e-03 13:3.09e-03 14:2.95e-03 15:2.85e-03 16:2.95e-03 17:3.11e-03 18:2.74e-03 19:2.86e-03 20:2.71e-03 21:2.84e-03 22:2.80e-03 23:2.84e-03
+2026-09-30T04:28:14.758Z == B/C. scoring train (100 pairs)
+2026-09-30T04:29:09.775Z   trained  {"n": 100, "mean_margin": 1.9078127281665802, "mean_margin_ci95": [1.5796095983982088, 2.2533540267944336], "accuracy": 0.91, "ties": 0, "sign_test_p": 3.322048979453653e-18}
+2026-09-30T04:29:36.429Z   zero     {"n": 100, "mean_margin": 0.0, "mean_margin_ci95": [0.0, 0.0], "accuracy": 0.0, "ties": 100, "sign_test_p": 1.0}
+2026-09-30T04:30:03.317Z   random   {"n": 100, "mean_margin": -0.007371923208236695, "mean_margin_ci95": [-0.015297299385070802, 0.0003727939128875731], "accuracy": 0.43, "ties": 0, "sign_test_p": 0.19334790449564246}
+2026-09-30T04:30:03.327Z   length confound: pearson(margin, len_c-len_r)=-0.274  acc|chosen shorter=0.96  acc|chosen longer=0.82
+2026-09-30T04:30:03.328Z == B/C. scoring heldout (100 pairs)
+2026-09-30T04:30:58.989Z   trained  {"n": 100, "mean_margin": 1.1853116660118104, "mean_margin_ci95": [0.831388533115387, 1.5459342360496522], "accuracy": 0.77, "ties": 0, "sign_test_p": 5.5135807758500534e-08}
+2026-09-30T04:31:27.067Z   zero     {"n": 100, "mean_margin": 0.0, "mean_margin_ci95": [0.0, 0.0], "accuracy": 0.0, "ties": 100, "sign_test_p": 1.0}
+2026-09-30T04:31:54.994Z   random   {"n": 100, "mean_margin": -0.0090961332321167, "mean_margin_ci95": [-0.016062066078186034, -0.002201277732849121], "accuracy": 0.4, "ties": 0, "sign_test_p": 0.05688793364098079}
+2026-09-30T04:31:55.005Z   length confound: pearson(margin, len_c-len_r)=-0.126  acc|chosen shorter=0.83  acc|chosen longer=0.59
+2026-09-30T04:31:55.006Z == verdict
+2026-09-30T04:31:55.007Z {
+2026-09-30T04:31:55.008Z  "run_is_real": true,
+2026-09-30T04:31:55.010Z  "generalises": true,
+2026-09-30T04:31:55.012Z  "checks": {
+2026-09-30T04:31:55.013Z   "every_target_module_has_nonzero_B": true,
+2026-09-30T04:31:55.015Z   "ref_adapter_is_identity": true,
+2026-09-30T04:31:55.016Z   "zero_control_margin_is_zero": true,
+2026-09-30T04:31:55.018Z   "learned_train_pairs": true,
+2026-09-30T04:31:55.020Z   "beats_random_control_on_train": true,
+2026-09-30T04:31:55.021Z   "generalises_heldout": true
+2026-09-30T04:31:55.023Z  }
+2026-09-30T04:31:55.024Z }
+2026-09-30T04:31:56.645Z [exit code 0]

@@ -1,0 +1,21 @@
+2026-09-30T04:32:09.501Z $ soup ship --base Qwen/Qwen2.5-0.5B-Instruct --adapter out-dpo --task-eval task_eval.jsonl --general-suite mini_arithmetic --device cuda -o results/ship_trained.json
+2026-09-30T04:32:10.156Z Live eval: loading base/tuned at full precision (bfloat16); pass --config to 
+2026-09-30T04:32:10.156Z reuse the training run's own quantization.
+2026-09-30T04:32:18.011Z Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+2026-09-30T04:32:19.394Z [transformers] `torch_dtype` is deprecated! Use `dtype` instead!
+2026-09-30T04:38:56.538Z ╭───────────────────────────────── soup ship ──────────────────────────────────╮
+2026-09-30T04:38:56.540Z │ DON'T SHIP                                                                   │
+2026-09-30T04:38:56.541Z │ Leg 1 task win (metric): 0.4444 -> 0.3333  [no win]                          │
+2026-09-30T04:38:56.542Z │                                                                              │
+2026-09-30T04:38:56.544Z │ Leg 2 general suite (threshold 5.00%)                                        │
+2026-09-30T04:38:56.547Z │ ┏━━━━━━━━━━━━━━━━━┳━━━━━━━━┳━━━━━━━━┳━━━━━━━━━┳━━━━━━━━━┓                    │
+2026-09-30T04:38:56.549Z │ ┃ Benchmark       ┃   Base ┃  Tuned ┃       Δ ┃ Verdict ┃                    │
+2026-09-30T04:38:56.550Z │ ┡━━━━━━━━━━━━━━━━━╇━━━━━━━━╇━━━━━━━━╇━━━━━━━━━╇━━━━━━━━━┩                    │
+2026-09-30T04:38:56.551Z │ │ mini_arithmetic │ 1.0000 │ 0.9722 │ -0.0278 │ ok      │                    │
+2026-09-30T04:38:56.553Z │ └─────────────────┴────────┴────────┴─────────┴─────────┘                    │
+2026-09-30T04:38:56.554Z │                                                                              │
+2026-09-30T04:38:56.555Z │ Task did not improve (metric: 0.4444 -> 0.3333, got worse). A strict win is  │
+2026-09-30T04:38:56.556Z │ required to ship.                                                            │
+2026-09-30T04:38:56.558Z ╰──────────────────────────────────────────────────────────────────────────────╯
+2026-09-30T04:38:56.560Z Wrote results/ship_trained.json
+2026-09-30T04:38:58.485Z [exit code 2]

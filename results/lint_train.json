@@ -1,0 +1,32 @@
+{
+  "fmt": "dpo",
+  "overall": "OK",
+  "rows_scanned": 400,
+  "total_rows": 400,
+  "checks": [
+    {
+      "name": "length_bias",
+      "verdict": "OK",
+      "message": "effect size (Cohen's d) = -0.270 (rejected longer than chosen); chosen is longer in 35.0% of rows",
+      "evidence": "mean chosen=176.7, mean rejected=223.2"
+    },
+    {
+      "name": "identical_pairs",
+      "verdict": "OK",
+      "message": "0/400 rows (0.0%) have chosen == rejected (zero preference signal)",
+      "evidence": ""
+    },
+    {
+      "name": "near_duplicates",
+      "verdict": "OK",
+      "message": "near-dup check skipped (datasketch not installed)",
+      "evidence": "pip install \"soup-cli[data]\" to enable"
+    },
+    {
+      "name": "prompt_leak",
+      "verdict": "OK",
+      "message": "0/400 rows (0.0%) have the prompt echoed verbatim inside the completion",
+      "evidence": "min_prompt_len=40"
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+2026-09-30T04:11:30.166Z $ soup train --config soup.yaml --dry-run
+2026-09-30T04:11:31.002Z Loading config from soup.yaml...
+2026-09-30T04:11:32.706Z ╭─────────────────────────────── Training Setup ───────────────────────────────╮
+2026-09-30T04:11:32.707Z │ Device:  Tesla T4                                                            │
+2026-09-30T04:11:32.708Z │ Memory:  14.6 GB                                                             │
+2026-09-30T04:11:32.711Z │ Model:   Qwen/Qwen2.5-0.5B-Instruct                                          │
+2026-09-30T04:11:32.711Z │ Task:    dpo                                                                 │
+2026-09-30T04:11:32.714Z │ Backend: transformers                                                        │
+2026-09-30T04:11:32.715Z │ LoRA:    r=16, alpha=32                                                      │
+2026-09-30T04:11:32.717Z │ Quant:   none                                                                │
+2026-09-30T04:11:32.719Z │ Seed:    42                                                                  │
+2026-09-30T04:11:32.720Z ╰──────────────────────────────────────────────────────────────────────────────╯
+2026-09-30T04:11:32.721Z Dry run - validating data...
+2026-09-30T04:11:32.729Z Data OK: 400 train samples
+2026-09-30T04:11:32.730Z Config valid. Ready to train!
+2026-09-30T04:11:33.362Z [exit code 0]

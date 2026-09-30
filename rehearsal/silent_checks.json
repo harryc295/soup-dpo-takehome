@@ -1,0 +1,71 @@
+{
+ "truncation_and_length": {
+  "pairs": 400,
+  "prompt_truncated_pct": 19.5,
+  "chosen_truncated_pct": 11.5,
+  "rejected_truncated_pct": 14.8,
+  "both_truncated_pct (end-of-turn token lost on both)": 5.5,
+  "identical_after_truncation": 0,
+  "chosen_mean_tokens": 178.7,
+  "rejected_mean_tokens": 225.2,
+  "chosen_shorter_pct": 65.0
+ },
+ "log_history": {
+  "checkpoint_used": "out-local\\checkpoint-100\\trainer_state.json",
+  "logged_steps": 100,
+  "max_step": 100,
+  "global_step": 100,
+  "missing_steps": [],
+  "first_loss": 0.6931471824645996,
+  "first_loss_minus_ln2": 1.904654323148236e-09,
+  "nonfinite_loss": 0,
+  "nonfinite_grad_norm (fp16 GradScaler skipped steps)": 0,
+  "grad_norm_max": 30.935577392578125,
+  "steps_with_loss_exactly_ln2": 2,
+  "loss_first_quarter_mean": 0.5567060256004334,
+  "loss_last_quarter_mean": 0.283208264708519,
+  "reward_acc_first_quarter": 0.665,
+  "reward_acc_last_quarter": 0.92,
+  "reward_margin_last_quarter": 2.307210367321968,
+  "rewards_chosen_last_quarter": 0.006024269266054034,
+  "rewards_rejected_last_quarter": -2.3011861141771077,
+  "logps_chosen_first_vs_last_quarter": [
+   -266.3923971557617,
+   -251.24751777648925
+  ],
+  "logps_rejected_first_vs_last_quarter": [
+   -286.62314876556394,
+   -315.521104927063
+  ],
+  "likelihood_displacement (chosen reward < 0 at end)": false
+ },
+ "soup_db": {
+  "run_id": "run_20260930_050359_c16557be",
+  "metric_columns": [
+   "id",
+   "run_id",
+   "step",
+   "epoch",
+   "loss",
+   "val_loss",
+   "lr",
+   "grad_norm",
+   "speed",
+   "gpu_mem",
+   "timestamp"
+  ],
+  "dpo_reward_metrics_stored": false,
+  "rows": 101,
+  "gpu_mem_values_seen": [
+   "4.1/8.0 GB",
+   "5.6/8.0 GB"
+  ],
+  "speed_nonzero_rows": 1
+ },
+ "russian_tokens": {
+  "english_tokens": 56,
+  "russian_tokens": 85,
+  "ru_over_en": 1.52,
+  "note": "same meaning, hand-translated; more tokens = more truncation at 512"
+ }
+}

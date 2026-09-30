@@ -1,0 +1,75 @@
+2026-09-30T04:31:56.647Z $ python silent_checks.py --run out-lenbal --train data/train_lenbal.jsonl --db soup_lenbal.db --out results/silent_checks_lenbal.json
+2026-09-30T04:32:03.937Z Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+2026-09-30T04:32:06.171Z {
+2026-09-30T04:32:06.172Z  "truncation_and_length": {
+2026-09-30T04:32:06.174Z   "pairs": 400,
+2026-09-30T04:32:06.175Z   "prompt_truncated_pct": 18.8,
+2026-09-30T04:32:06.176Z   "chosen_truncated_pct": 14.8,
+2026-09-30T04:32:06.178Z   "rejected_truncated_pct": 13.8,
+2026-09-30T04:32:06.181Z   "both_truncated_pct (end-of-turn token lost on both)": 6.2,
+2026-09-30T04:32:06.183Z   "identical_after_truncation": 0,
+2026-09-30T04:32:06.184Z   "chosen_mean_tokens": 202.8,
+2026-09-30T04:32:06.185Z   "rejected_mean_tokens": 210.8,
+2026-09-30T04:32:06.186Z   "chosen_shorter_pct": 52.8
+2026-09-30T04:32:06.188Z  },
+2026-09-30T04:32:06.189Z  "log_history": {
+2026-09-30T04:32:06.191Z   "checkpoint_used": "out-lenbal/checkpoint-100/trainer_state.json",
+2026-09-30T04:32:06.192Z   "logged_steps": 100,
+2026-09-30T04:32:06.193Z   "max_step": 100,
+2026-09-30T04:32:06.195Z   "global_step": 100,
+2026-09-30T04:32:06.198Z   "missing_steps": [],
+2026-09-30T04:32:06.199Z   "first_loss": 0.6931471824645996,
+2026-09-30T04:32:06.200Z   "first_loss_minus_ln2": 1.904654323148236e-09,
+2026-09-30T04:32:06.202Z   "nonfinite_loss": 0,
+2026-09-30T04:32:06.203Z   "nonfinite_grad_norm (fp16 GradScaler skipped steps)": 3,
+2026-09-30T04:32:06.203Z   "grad_norm_max": 29.996240615844727,
+2026-09-30T04:32:06.204Z   "steps_with_loss_exactly_ln2": 4,
+2026-09-30T04:32:06.206Z   "loss_first_quarter_mean": 0.6165390956401825,
+2026-09-30T04:32:06.207Z   "loss_last_quarter_mean": 0.3372229444980621,
+2026-09-30T04:32:06.208Z   "reward_acc_first_quarter": 0.59,
+2026-09-30T04:32:06.210Z   "reward_acc_last_quarter": 0.895,
+2026-09-30T04:32:06.211Z   "reward_margin_last_quarter": 1.636614591628313,
+2026-09-30T04:32:06.211Z   "rewards_chosen_last_quarter": 0.6522282013855875,
+2026-09-30T04:32:06.212Z   "rewards_rejected_last_quarter": -0.9843864119425416,
+2026-09-30T04:32:06.214Z   "logps_chosen_first_vs_last_quarter": [
+2026-09-30T04:32:06.215Z    -288.383643989563,
+2026-09-30T04:32:06.219Z    -270.35267009735105
+2026-09-30T04:32:06.220Z   ],
+2026-09-30T04:32:06.221Z   "logps_rejected_first_vs_last_quarter": [
+2026-09-30T04:32:06.227Z    -278.003848991394,
+2026-09-30T04:32:06.230Z    -282.37610904693605
+2026-09-30T04:32:06.231Z   ],
+2026-09-30T04:32:06.233Z   "likelihood_displacement (chosen reward < 0 at end)": false
+2026-09-30T04:32:06.234Z  },
+2026-09-30T04:32:06.236Z  "soup_db": {
+2026-09-30T04:32:06.239Z   "run_id": "run_20260930_042212_82cb7695",
+2026-09-30T04:32:06.240Z   "metric_columns": [
+2026-09-30T04:32:06.240Z    "id",
+2026-09-30T04:32:06.244Z    "run_id",
+2026-09-30T04:32:06.245Z    "step",
+2026-09-30T04:32:06.245Z    "epoch",
+2026-09-30T04:32:06.247Z    "loss",
+2026-09-30T04:32:06.248Z    "val_loss",
+2026-09-30T04:32:06.250Z    "lr",
+2026-09-30T04:32:06.251Z    "grad_norm",
+2026-09-30T04:32:06.252Z    "speed",
+2026-09-30T04:32:06.254Z    "gpu_mem",
+2026-09-30T04:32:06.256Z    "timestamp"
+2026-09-30T04:32:06.257Z   ],
+2026-09-30T04:32:06.259Z   "dpo_reward_metrics_stored": false,
+2026-09-30T04:32:06.260Z   "rows": 101,
+2026-09-30T04:32:06.261Z   "gpu_mem_values_seen": [
+2026-09-30T04:32:06.263Z    "5.4/14.6 GB",
+2026-09-30T04:32:06.265Z    "5.5/14.6 GB",
+2026-09-30T04:32:06.267Z    "5.6/14.6 GB"
+2026-09-30T04:32:06.268Z   ],
+2026-09-30T04:32:06.269Z   "speed_nonzero_rows": 1
+2026-09-30T04:32:06.271Z  },
+2026-09-30T04:32:06.272Z  "russian_tokens": {
+2026-09-30T04:32:06.274Z   "english_tokens": 56,
+2026-09-30T04:32:06.275Z   "russian_tokens": 85,
+2026-09-30T04:32:06.276Z   "ru_over_en": 1.52,
+2026-09-30T04:32:06.278Z   "note": "same meaning, hand-translated; more tokens = more truncation at 512"
+2026-09-30T04:32:06.281Z  }
+2026-09-30T04:32:06.281Z }
+2026-09-30T04:32:07.409Z [exit code 0]

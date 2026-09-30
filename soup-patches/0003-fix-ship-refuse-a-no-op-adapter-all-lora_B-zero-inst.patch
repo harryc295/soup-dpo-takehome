@@ -1,0 +1,346 @@
+From 983cab78ca6879041c822144caca9bbcc4bf0afc Mon Sep 17 00:00:00 2001
+From: harryc295 <corcoranharry4@gmail.com>
+Date: Wed, 30 Sep 2026 05:21:44 +0100
+Subject: [PATCH 3/3] fix(ship): refuse a no-op adapter (all lora_B zero)
+ instead of reporting "no task win"
+
+---
+ changelog.d/0.75.1/1478.fixed.md   |   7 ++
+ src/soup_cli/commands/ship.py      |  23 ++++
+ src/soup_cli/utils/adapter_diff.py |  29 +++++
+ src/soup_cli/utils/ship_verdict.py |  25 ++++
+ tests/test_ship_adapter_noop.py    | 177 +++++++++++++++++++++++++++++
+ 5 files changed, 261 insertions(+)
+ create mode 100644 changelog.d/0.75.1/1478.fixed.md
+ create mode 100644 tests/test_ship_adapter_noop.py
+
+diff --git a/changelog.d/0.75.1/1478.fixed.md b/changelog.d/0.75.1/1478.fixed.md
+new file mode 100644
+index 0000000..ba15122
+--- /dev/null
++++ b/changelog.d/0.75.1/1478.fixed.md
+@@ -0,0 +1,7 @@
++- ``soup ship --adapter`` now refuses an adapter whose ``lora_B`` tensors are all
++  zero (an untrained adapter, or TRL's DPO ``ref/`` sub-adapter) with the distinct
++  failed rule ``adapter_noop``, before any model is loaded. Such an adapter is
++  mathematically the base model; it used to be rejected only indirectly as "task
++  did not improve", which misreported the cause and was unreliable under noisy
++  sampling. Adapters with no ``lora_B`` keys (VeRA and other PEFT types) are not
++  checked.
+diff --git a/src/soup_cli/commands/ship.py b/src/soup_cli/commands/ship.py
+index 709f773..07fd2b4 100644
+--- a/src/soup_cli/commands/ship.py
++++ b/src/soup_cli/commands/ship.py
+@@ -77,6 +77,7 @@ from soup_cli.utils.ship_verdict import (
+     NoiseFloor,
+     ShipVerdict,
+     TaskWin,
++    adapter_noop_verdict,
+     build_task_win,
+     compute_benchmark_deltas,
+     compute_noise_floor,
+@@ -1039,6 +1040,28 @@ def _verdict_live(
+     # would be an unbounded number of full model passes.
+     noise_floor_runs = _validate_noise_floor_flag(noise_floor_runs)
+ 
++    # An all-zero lora_B adapter is base + 0: refuse it from the weights file,
++    # before any model load, rather than reporting a misleading "no task win".
++    if adapter:
++        from soup_cli.utils.adapter_diff import lora_b_all_zero
++
++        try:
++            zero_b_count = lora_b_all_zero(adapter)
++        except (ValueError, OSError, RuntimeError, ImportError) as exc:
++            console.print(
++                f"[yellow]Warning:[/] could not inspect adapter weights "
++                f"({type(exc).__name__}); skipping the no-op adapter check."
++            )
++            zero_b_count = None
++        if zero_b_count:
++            console.print(
++                f"[red]Adapter is a no-op:[/] all {zero_b_count} lora_B tensors "
++                "are zero, so tuned == base."
++            )
++            return adapter_noop_verdict(
++                task_mode, forgetting_threshold=forgetting_threshold
++            )
++
+     tuned_id = tuned if tuned else base
+     try:
+         base_gen, tuned_gen = _resolve_generators(base, tuned, adapter, device, quantization)
+diff --git a/src/soup_cli/utils/adapter_diff.py b/src/soup_cli/utils/adapter_diff.py
+index 2dc7354..e5cba63 100644
+--- a/src/soup_cli/utils/adapter_diff.py
++++ b/src/soup_cli/utils/adapter_diff.py
+@@ -240,6 +240,35 @@ def load_adapter_weights(adapter_dir: str) -> Mapping[str, Any]:
+     return _load_safetensors(path)
+ 
+ 
++def lora_b_all_zero(adapter_dir: str) -> Optional[int]:
++    """Count of ``lora_B`` tensors if EVERY one is exactly zero, else ``None``.
++
++    PEFT initialises ``lora_B`` to zero, so an adapter whose B matrices are all
++    zero adds nothing to the base weights (tuned == base). ``None`` also covers
++    "cannot tell": no weights file, or no ``lora_B`` keys (VeRA / other PEFT
++    types, where zero B does not mean the same thing).
++
++    Tensors are streamed one at a time via torch (numpy cannot read bfloat16,
++    the usual adapter dtype), and only the ``lora_B`` ones are materialised.
++    """
++    try:
++        path = _adapter_weights_path(Path(adapter_dir))
++    except FileNotFoundError:
++        return None
++    import torch
++    from safetensors import safe_open
++
++    count = 0
++    with safe_open(str(path), framework="pt") as handle:
++        for key in handle.keys():
++            if ".lora_B." not in key and not key.endswith(".lora_B"):
++                continue
++            if torch.count_nonzero(handle.get_tensor(key)).item() != 0:
++                return None
++            count += 1
++    return count or None
++
++
+ def _effective_rank_average(weights: Mapping[str, Any]) -> Optional[float]:
+     """Mean effective-rank across 2D LoRA matrices (None if no 2D tensors)."""
+     import numpy as np
+diff --git a/src/soup_cli/utils/ship_verdict.py b/src/soup_cli/utils/ship_verdict.py
+index 9cc8ed7..900b32e 100644
+--- a/src/soup_cli/utils/ship_verdict.py
++++ b/src/soup_cli/utils/ship_verdict.py
+@@ -81,6 +81,7 @@ DECISION_DONT_SHIP = "DON'T SHIP"
+ FAILED_MISSING_BASELINE = "missing_baseline"  # leg 2 could not be measured
+ FAILED_TASK_WIN = "task_win"  # leg 1: task did not strictly improve
+ FAILED_REGRESSION = "regression"  # leg 2: a general benchmark regressed
++FAILED_ADAPTER_NOOP = "adapter_noop"  # every lora_B is zero: tuned == base
+ 
+ # Default forgetting threshold — 0.05 ABSOLUTE points, mirroring
+ # ``EvalGateConfig.regression_threshold`` and ``run_gate`` semantics.
+@@ -525,6 +526,24 @@ def decide_ship(
+     )
+ 
+ 
++def adapter_noop_verdict(
++    task_mode: str, *, forgetting_threshold: float = DEFAULT_FORGETTING_THRESHOLD
++) -> ShipVerdict:
++    """DON'T SHIP for an adapter whose ``lora_B`` tensors are all zero.
++
++    Decided from the weights alone, before any model load, so the scores are
++    placeholders (0.0 -> 0.0, no win, no benchmarks), not measurements.
++    """
++    return ShipVerdict(
++        decision=DECISION_DONT_SHIP,
++        task_win=TaskWin(mode=task_mode, base=0.0, tuned=0.0, won=False),
++        benchmark_deltas=(),
++        failed_rule=FAILED_ADAPTER_NOOP,
++        forgetting_threshold=_validate_threshold(forgetting_threshold),
++        soup_version=__version__,
++    )
++
++
+ # ---------------------------------------------------------------------------
+ # Reason strings (shared by rubric + panel)
+ # ---------------------------------------------------------------------------
+@@ -540,6 +559,12 @@ def _failed_rule_explanation(verdict: ShipVerdict) -> str:
+             "Task improved AND no general benchmark regressed past "
+             f"{verdict.forgetting_threshold:.2%}."
+         )
++    if verdict.failed_rule == FAILED_ADAPTER_NOOP:
++        return (
++            "Adapter is a no-op: every lora_B tensor is zero, so tuned == base. "
++            "Nothing was trained (or --adapter points at an untrained / ref "
++            "adapter). No model was loaded; no scores were measured."
++        )
+     if verdict.failed_rule == FAILED_MISSING_BASELINE:
+         return (
+             "No general-suite benchmarks were measured — cannot verify the "
+diff --git a/tests/test_ship_adapter_noop.py b/tests/test_ship_adapter_noop.py
+new file mode 100644
+index 0000000..032d613
+--- /dev/null
++++ b/tests/test_ship_adapter_noop.py
+@@ -0,0 +1,177 @@
++"""``soup ship --adapter`` refuses a no-op adapter (every ``lora_B`` tensor zero).
++
++PEFT initialises ``lora_B`` to zero, so an adapter whose B matrices are all zero
++adds nothing to the base weights: tuned == base. That is what a run whose
++optimizer never stepped saves, and what TRL's DPO trainer writes to its ``ref/``
++sub-adapter. Ship used to reject it only indirectly ("task did not improve"),
++which misreports the cause. The check reads the weights file BEFORE any model
++load, so the generator factory must never be reached.
++"""
++
++from __future__ import annotations
++
++import json
++from pathlib import Path
++
++import numpy as np
++import pytest
++from safetensors.numpy import save_file
++from typer.testing import CliRunner
++
++from soup_cli.commands import ship as ship_cmd
++from soup_cli.utils import live_eval
++
++_A = "base_model.model.layers.0.self_attn.q_proj.lora_A.weight"
++_B = "base_model.model.layers.0.self_attn.q_proj.lora_B.weight"
++_A2 = "base_model.model.layers.1.self_attn.q_proj.lora_A.weight"
++_B2 = "base_model.model.layers.1.self_attn.q_proj.lora_B.weight"
++
++
++def _write_adapter(directory: Path, tensors: dict) -> None:
++    directory.mkdir(parents=True, exist_ok=True)
++    save_file(tensors, str(directory / "adapter_model.safetensors"))
++    (directory / "adapter_config.json").write_text(
++        json.dumps({"peft_type": "LORA", "r": 4}), encoding="utf-8"
++    )
++
++
++def _lora_b_all_zero(adapter_dir: str):
++    # Imported lazily so a missing helper fails these tests, not collection.
++    from soup_cli.utils.adapter_diff import lora_b_all_zero
++
++    return lora_b_all_zero(adapter_dir)
++
++
++def _rand(*shape: int) -> np.ndarray:
++    return np.random.default_rng(0).standard_normal(shape).astype(np.float32)
++
++
++def _zero_b_tensors() -> dict:
++    return {
++        _A: _rand(4, 8), _B: np.zeros((8, 4), np.float32),
++        _A2: _rand(4, 8), _B2: np.zeros((8, 4), np.float32),
++    }
++
++
++def _invoke(runner: CliRunner, *extra: str):
++    Path("task.jsonl").write_text(
++        json.dumps({"prompt": "say hi", "expected": "hi", "scoring": "contains"}) + "\n",
++        encoding="utf-8",
++    )
++    return runner.invoke(
++        ship_cmd.app,
++        ["--base", "m", "--adapter", "ad", "--task-eval", "task.jsonl",
++         "--device", "cpu", *extra],
++    )
++
++
++@pytest.fixture
++def factory_calls(monkeypatch):
++    """Record every generator build; a no-op adapter must produce none."""
++    calls: list = []
++
++    def _fake(*args, **kwargs):
++        calls.append((args, kwargs))
++        return lambda prompt: "hi"
++
++    monkeypatch.setattr(live_eval, "make_generator", _fake)
++    return calls
++
++
++class TestLoraBAllZero:
++    def test_counts_zero_b_tensors(self, tmp_path):
++        _write_adapter(tmp_path / "ad", _zero_b_tensors())
++        assert _lora_b_all_zero(str(tmp_path / "ad")) == 2
++
++    def test_none_when_any_b_is_nonzero(self, tmp_path):
++        tensors = _zero_b_tensors()
++        tensors[_B2] = _rand(8, 4)
++        _write_adapter(tmp_path / "ad", tensors)
++        assert _lora_b_all_zero(str(tmp_path / "ad")) is None
++
++    def test_none_without_lora_b_keys(self, tmp_path):
++        # VeRA / other PEFT types: do not guess.
++        _write_adapter(tmp_path / "ad", {
++            "base_model.model.l0.vera_lambda_b": np.zeros(4, np.float32),
++            "base_model.model.l0.vera_lambda_d": _rand(4),
++        })
++        assert _lora_b_all_zero(str(tmp_path / "ad")) is None
++
++    def test_none_when_weights_missing(self, tmp_path):
++        assert _lora_b_all_zero(str(tmp_path / "does-not-exist")) is None
++
++    def test_bfloat16_zero_b(self, tmp_path):
++        torch = pytest.importorskip("torch")
++        from safetensors.torch import save_file as save_torch
++
++        d = tmp_path / "ad"
++        d.mkdir()
++        save_torch(
++            {_A: torch.randn(4, 8).bfloat16(), _B: torch.zeros(8, 4).bfloat16()},
++            str(d / "adapter_model.safetensors"),
++        )
++        assert _lora_b_all_zero(str(d)) == 1
++
++
++class TestShipRefusesNoopAdapter:
++    def test_zero_b_adapter_is_dont_ship_without_loading_a_model(
++        self, tmp_path, monkeypatch, factory_calls
++    ):
++        monkeypatch.chdir(tmp_path)
++        _write_adapter(tmp_path / "ad", _zero_b_tensors())
++        res = _invoke(
++            CliRunner(), "-o", "verdict.json", "--emit-evidence", "evidence.json"
++        )
++
++        assert res.exit_code == 2, (res.output, repr(res.exception))
++        assert factory_calls == []
++        verdict = json.loads((tmp_path / "verdict.json").read_text(encoding="utf-8"))
++        assert verdict["decision"] == "DON'T SHIP"
++        assert verdict["failed_rule"] == "adapter_noop"
++        assert (tmp_path / "evidence.json").exists()
++        assert "no-op" in res.output
++        assert "2 lora_B" in res.output
++
++    def test_nonzero_b_adapter_passes_through_to_normal_path(
++        self, tmp_path, monkeypatch, factory_calls
++    ):
++        monkeypatch.chdir(tmp_path)
++        tensors = _zero_b_tensors()
++        tensors[_B] = _rand(8, 4)
++        _write_adapter(tmp_path / "ad", tensors)
++        res = _invoke(CliRunner(), "-o", "verdict.json")
++
++        assert len(factory_calls) == 2, res.output  # base + tuned were built
++        verdict = json.loads((tmp_path / "verdict.json").read_text(encoding="utf-8"))
++        assert verdict["failed_rule"] != "adapter_noop"
++
++    def test_adapter_without_lora_b_keys_skips_the_check(
++        self, tmp_path, monkeypatch, factory_calls
++    ):
++        monkeypatch.chdir(tmp_path)
++        _write_adapter(tmp_path / "ad", {
++            "base_model.model.l0.vera_lambda_b": np.zeros(4, np.float32),
++        })
++        res = _invoke(CliRunner(), "-o", "verdict.json")
++
++        assert len(factory_calls) == 2, res.output
++        verdict = json.loads((tmp_path / "verdict.json").read_text(encoding="utf-8"))
++        assert verdict["failed_rule"] != "adapter_noop"
++
++    def test_tuned_model_path_is_never_checked(
++        self, tmp_path, monkeypatch, factory_calls
++    ):
++        # --tuned is a full model; an unrelated zero-B adapter dir must not matter.
++        monkeypatch.chdir(tmp_path)
++        _write_adapter(tmp_path / "ad", _zero_b_tensors())
++        Path("task.jsonl").write_text(
++            json.dumps({"prompt": "p", "expected": "hi", "scoring": "contains"}) + "\n",
++            encoding="utf-8",
++        )
++        res = CliRunner().invoke(
++            ship_cmd.app,
++            ["--base", "m", "--tuned", "ad", "--task-eval", "task.jsonl",
++             "--device", "cpu", "-o", "verdict.json"],
++        )
++        verdict = json.loads((tmp_path / "verdict.json").read_text(encoding="utf-8"))
++        assert verdict["failed_rule"] != "adapter_noop", res.output
+-- 
+2.54.0.windows.1
+

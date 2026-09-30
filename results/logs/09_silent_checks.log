@@ -1,0 +1,76 @@
+2026-09-30T04:21:57.883Z $ python silent_checks.py --run out-dpo --db soup.db --out results/silent_checks.json
+2026-09-30T04:22:05.078Z Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+2026-09-30T04:22:07.133Z {
+2026-09-30T04:22:07.134Z  "truncation_and_length": {
+2026-09-30T04:22:07.136Z   "pairs": 400,
+2026-09-30T04:22:07.137Z   "prompt_truncated_pct": 19.5,
+2026-09-30T04:22:07.139Z   "chosen_truncated_pct": 11.5,
+2026-09-30T04:22:07.140Z   "rejected_truncated_pct": 14.8,
+2026-09-30T04:22:07.142Z   "both_truncated_pct (end-of-turn token lost on both)": 5.5,
+2026-09-30T04:22:07.143Z   "identical_after_truncation": 0,
+2026-09-30T04:22:07.144Z   "chosen_mean_tokens": 178.7,
+2026-09-30T04:22:07.146Z   "rejected_mean_tokens": 225.2,
+2026-09-30T04:22:07.149Z   "chosen_shorter_pct": 65.0
+2026-09-30T04:22:07.154Z  },
+2026-09-30T04:22:07.155Z  "log_history": {
+2026-09-30T04:22:07.155Z   "checkpoint_used": "out-dpo/checkpoint-100/trainer_state.json",
+2026-09-30T04:22:07.157Z   "logged_steps": 100,
+2026-09-30T04:22:07.159Z   "max_step": 100,
+2026-09-30T04:22:07.160Z   "global_step": 100,
+2026-09-30T04:22:07.162Z   "missing_steps": [],
+2026-09-30T04:22:07.164Z   "first_loss": 0.6931471824645996,
+2026-09-30T04:22:07.166Z   "first_loss_minus_ln2": 1.904654323148236e-09,
+2026-09-30T04:22:07.167Z   "nonfinite_loss": 0,
+2026-09-30T04:22:07.168Z   "nonfinite_grad_norm (fp16 GradScaler skipped steps)": 4,
+2026-09-30T04:22:07.171Z   "grad_norm_max": 29.538558959960938,
+2026-09-30T04:22:07.171Z   "steps_with_loss_exactly_ln2": 4,
+2026-09-30T04:22:07.172Z   "loss_first_quarter_mean": 0.5646357667446137,
+2026-09-30T04:22:07.175Z   "loss_last_quarter_mean": 0.2728499072790146,
+2026-09-30T04:22:07.178Z   "reward_acc_first_quarter": 0.655,
+2026-09-30T04:22:07.178Z   "reward_acc_last_quarter": 0.915,
+2026-09-30T04:22:07.179Z   "reward_margin_last_quarter": 2.357384010851383,
+2026-09-30T04:22:07.180Z   "rewards_chosen_last_quarter": -0.06071498390287161,
+2026-09-30T04:22:07.182Z   "rewards_rejected_last_quarter": -2.418099001124501,
+2026-09-30T04:22:07.183Z   "logps_chosen_first_vs_last_quarter": [
+2026-09-30T04:22:07.184Z    -266.7210450363159,
+2026-09-30T04:22:07.185Z    -252.01658269882202
+2026-09-30T04:22:07.187Z   ],
+2026-09-30T04:22:07.188Z   "logps_rejected_first_vs_last_quarter": [
+2026-09-30T04:22:07.189Z    -286.0657208251953,
+2026-09-30T04:22:07.190Z    -316.63812522888185
+2026-09-30T04:22:07.191Z   ],
+2026-09-30T04:22:07.194Z   "likelihood_displacement (chosen reward < 0 at end)": true
+2026-09-30T04:22:07.197Z  },
+2026-09-30T04:22:07.197Z  "soup_db": {
+2026-09-30T04:22:07.199Z   "run_id": "run_20260930_041144_63e1f2e0",
+2026-09-30T04:22:07.201Z   "metric_columns": [
+2026-09-30T04:22:07.203Z    "id",
+2026-09-30T04:22:07.205Z    "run_id",
+2026-09-30T04:22:07.206Z    "step",
+2026-09-30T04:22:07.207Z    "epoch",
+2026-09-30T04:22:07.211Z    "loss",
+2026-09-30T04:22:07.212Z    "val_loss",
+2026-09-30T04:22:07.213Z    "lr",
+2026-09-30T04:22:07.214Z    "grad_norm",
+2026-09-30T04:22:07.220Z    "speed",
+2026-09-30T04:22:07.223Z    "gpu_mem",
+2026-09-30T04:22:07.225Z    "timestamp"
+2026-09-30T04:22:07.227Z   ],
+2026-09-30T04:22:07.236Z   "dpo_reward_metrics_stored": false,
+2026-09-30T04:22:07.237Z   "rows": 101,
+2026-09-30T04:22:07.238Z   "gpu_mem_values_seen": [
+2026-09-30T04:22:07.239Z    "4.1/14.6 GB",
+2026-09-30T04:22:07.241Z    "5.6/14.6 GB"
+2026-09-30T04:22:07.242Z   ],
+2026-09-30T04:22:07.249Z   "speed_nonzero_rows": 1
+2026-09-30T04:22:07.251Z  },
+2026-09-30T04:22:07.252Z  "russian_tokens": {
+2026-09-30T04:22:07.253Z   "english_tokens": 56,
+2026-09-30T04:22:07.256Z   "russian_tokens": 85,
+2026-09-30T04:22:07.257Z   "ru_over_en": 1.52,
+2026-09-30T04:22:07.258Z   "note": "same meaning, hand-translated; more tokens = more truncation at 512"
+2026-09-30T04:22:07.259Z  }
+2026-09-30T04:22:07.262Z }
+2026-09-30T04:22:08.720Z [exit code 0]
+2026-09-30T04:22:08.722Z $ cp $(ls -d out-dpo/checkpoint-* | sort -t- -k2 -n | tail -1)/trainer_state.json results/trainer_state.json
+2026-09-30T04:22:08.740Z [exit code 0]

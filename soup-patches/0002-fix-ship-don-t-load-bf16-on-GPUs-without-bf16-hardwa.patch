@@ -1,0 +1,181 @@
+From 0cdf6bc79721fb749c21d867fc2aba0c0b816424 Mon Sep 17 00:00:00 2001
+From: harryc295 <corcoranharry4@gmail.com>
+Date: Wed, 30 Sep 2026 05:11:32 +0100
+Subject: [PATCH 2/3] fix(ship): don't load bf16 on GPUs without bf16 hardware
+
+---
+ changelog.d/0.75.1/1477.fixed.md              |  6 +++++
+ src/soup_cli/commands/ship.py                 |  9 +++++--
+ src/soup_cli/utils/ship_verdict.py            |  6 ++---
+ tests/test_issue367_live_eval_quantization.py | 25 +++++++++++++++++++
+ tests/test_issue367_ship_numerics.py          | 14 +++++++++--
+ 5 files changed, 53 insertions(+), 7 deletions(-)
+ create mode 100644 changelog.d/0.75.1/1477.fixed.md
+
+diff --git a/changelog.d/0.75.1/1477.fixed.md b/changelog.d/0.75.1/1477.fixed.md
+new file mode 100644
+index 0000000..d4ff52e
+--- /dev/null
++++ b/changelog.d/0.75.1/1477.fixed.md
+@@ -0,0 +1,6 @@
++- ``soup ship`` live eval no longer loads the model in bfloat16 on CUDA cards
++  without bf16 hardware (Colab T4, V100, RTX 20xx). It now asks
++  ``bf16_fp16_flags`` (the same answer training uses, #385/#387) and loads
++  float16 there, bfloat16 on Ampere and newer, float32 on CPU. The console
++  message, the verdict and ``--emit-evidence`` stamp the dtype actually used;
++  ``float16`` is now an accepted numerics stamp in the full-precision family.
+diff --git a/src/soup_cli/commands/ship.py b/src/soup_cli/commands/ship.py
+index 9436ea9..709f773 100644
+--- a/src/soup_cli/commands/ship.py
++++ b/src/soup_cli/commands/ship.py
+@@ -467,9 +467,14 @@ def _live_eval_numerics(
+     if quantization == "4bit" or quantization == "8bit":
+         return quantization
+     from soup_cli.utils import live_eval
++    from soup_cli.utils.gpu import bf16_fp16_flags
+ 
+     resolved = live_eval.resolve_device(device)
+-    return "bfloat16" if resolved.startswith("cuda") else "float32"
++    # bf16 only where the card has bf16 units; a T4 (sm_75) gets fp16 (#385/#387).
++    use_bf16, use_fp16 = bf16_fp16_flags(resolved)
++    if use_bf16:
++        return "bfloat16"
++    return "float16" if use_fp16 else "float32"
+ 
+ 
+ def _expected_numerics_family(soup_config: "SoupConfig") -> str:
+@@ -537,7 +542,7 @@ def _resolve_generators(
+         )
+         dtype = None
+     else:
+-        # dtype is the stamp: bf16 on CUDA (including cuda:0), fp32 elsewhere.
++        # dtype is the stamp: bf16 or fp16 on CUDA by card, fp32 elsewhere.
+         dtype = numerics
+         console.print(
+             f"[dim]Live eval: loading base/tuned at full precision ({dtype}); "
+diff --git a/src/soup_cli/utils/ship_verdict.py b/src/soup_cli/utils/ship_verdict.py
+index a6ea343..9cc8ed7 100644
+--- a/src/soup_cli/utils/ship_verdict.py
++++ b/src/soup_cli/utils/ship_verdict.py
+@@ -91,9 +91,9 @@ DEFAULT_FORGETTING_THRESHOLD = 0.05
+ # ``from_pretrained``. The staleness gate compares *family* (``4bit`` / ``8bit``
+ # / ``full``), so a CUDA-bf16 run and a CPU-fp32 run of the same recipe are not
+ # stale relative to each other — the bug is NF4 vs bf16, not bf16 vs fp32.
+-KNOWN_NUMERICS: Tuple[str, ...] = ("4bit", "8bit", "bfloat16", "float32")
++KNOWN_NUMERICS: Tuple[str, ...] = ("4bit", "8bit", "bfloat16", "float16", "float32")
+ _QUANTIZED_NUMERICS = frozenset({"4bit", "8bit"})
+-_FULL_PRECISION_NUMERICS = frozenset({"bfloat16", "float32"})
++_FULL_PRECISION_NUMERICS = frozenset({"bfloat16", "float16", "float32"})
+ NUMERICS_FAMILY_FULL = "full"
+ 
+ # Float-noise tolerance so an exactly-at-threshold drop reads as OK (a -5.00%
+@@ -235,7 +235,7 @@ def parse_numerics(value: object) -> str:
+ def numerics_family(numerics: str) -> str:
+     """Map a stamp to the family the staleness gate compares.
+ 
+-    ``4bit`` and ``8bit`` stay themselves; ``bfloat16`` and ``float32`` collapse
++    ``4bit`` and ``8bit`` stay themselves; ``bfloat16``, ``float16`` and ``float32`` collapse
+     to ``full``. Unknown values raise — callers must ``parse_numerics`` first.
+     """
+     if numerics in _QUANTIZED_NUMERICS:
+diff --git a/tests/test_issue367_live_eval_quantization.py b/tests/test_issue367_live_eval_quantization.py
+index 6c58f3e..56ba558 100644
+--- a/tests/test_issue367_live_eval_quantization.py
++++ b/tests/test_issue367_live_eval_quantization.py
+@@ -20,6 +20,8 @@ from unittest.mock import MagicMock, patch
+ 
+ import pytest
+ 
++from soup_cli.utils import gpu as gpu_mod
++
+ 
+ def _fake_tokenizer():
+     tok = MagicMock()
+@@ -369,11 +371,33 @@ class TestResolveGeneratorsThreadsQuantization:
+ 
+         monkeypatch.setattr(_live_eval_mod, "make_generator", _fake)
+         monkeypatch.setattr(_live_eval_mod, "resolve_device", lambda device=None: "cuda")
++        monkeypatch.setattr(gpu_mod, "bf16_fp16_flags", lambda device: (True, False))
+         _resolve_generators(base="b", tuned=None, adapter="a", device=None)
+         out = capsys.readouterr().out
+         assert "bfloat16" in out
+         assert calls_dtype == ["bfloat16", "bfloat16"]
+ 
++    def test_pre_ampere_cuda_loads_float16_not_bfloat16(self, monkeypatch, capsys):
++        """A T4 (sm_75) has no bf16 units. The live eval must load float16 there,
++        following the same hardware answer as training (#385/#387), and the
++        console message must name the dtype that was actually requested."""
++        from soup_cli.commands.ship import _resolve_generators
++        from soup_cli.utils import live_eval as _live_eval_mod
++
++        calls_dtype = []
++
++        def _fake(model_id, adapter=None, device=None, max_new_tokens=64, **kwargs):
++            calls_dtype.append(kwargs.get("dtype"))
++            return lambda prompt: ""
++
++        monkeypatch.setattr(_live_eval_mod, "make_generator", _fake)
++        monkeypatch.setattr(gpu_mod, "bf16_fp16_flags", lambda device: (False, True))
++        _resolve_generators(base="b", tuned=None, adapter="a", device="cuda:0")
++        out = capsys.readouterr().out
++        assert "float16" in out
++        assert "bfloat16" not in out
++        assert calls_dtype == ["float16", "float16"]
++
+     def test_console_reports_the_resolved_dtype_on_indexed_cuda_device(
+         self, monkeypatch, capsys
+     ):
+@@ -391,6 +415,7 @@ class TestResolveGeneratorsThreadsQuantization:
+             return lambda prompt: ""
+ 
+         monkeypatch.setattr(_live_eval_mod, "make_generator", _fake)
++        monkeypatch.setattr(gpu_mod, "bf16_fp16_flags", lambda device: (True, False))
+         _resolve_generators(base="b", tuned=None, adapter="a", device="cuda:0")
+         out = capsys.readouterr().out
+         assert "bfloat16" in out
+diff --git a/tests/test_issue367_ship_numerics.py b/tests/test_issue367_ship_numerics.py
+index 72bd692..7329a89 100644
+--- a/tests/test_issue367_ship_numerics.py
++++ b/tests/test_issue367_ship_numerics.py
+@@ -76,6 +76,7 @@ class TestNumericsFamily:
+ 
+     def test_full_precision_collapses(self):
+         assert numerics_family("bfloat16") == NUMERICS_FAMILY_FULL
++        assert numerics_family("float16") == NUMERICS_FAMILY_FULL
+         assert numerics_family("float32") == NUMERICS_FAMILY_FULL
+ 
+     def test_unknown_raises_without_echoing_the_value(self):
+@@ -86,7 +87,7 @@ class TestNumericsFamily:
+ 
+ class TestParseNumerics:
+     def test_accepts_known_stamps(self):
+-        for value in ("4bit", "8bit", "bfloat16", "float32"):
++        for value in ("4bit", "8bit", "bfloat16", "float16", "float32"):
+             assert parse_numerics(value) == value
+ 
+     def test_rejects_non_string_without_echoing(self):
+@@ -146,11 +147,20 @@ class TestLiveEvalNumericsHelper:
+ 
+         assert _live_eval_numerics(None, "cpu") == "float32"
+ 
+-    def test_indexed_cuda_stamps_bfloat16_without_torch(self):
++    def test_indexed_cuda_with_bf16_hardware_stamps_bfloat16(self, monkeypatch):
+         from soup_cli.commands.ship import _live_eval_numerics
++        from soup_cli.utils import gpu
+ 
++        monkeypatch.setattr(gpu, "bf16_fp16_flags", lambda device: (True, False))
+         assert _live_eval_numerics(None, "cuda:0") == "bfloat16"
+ 
++    def test_cuda_without_bf16_hardware_stamps_float16(self, monkeypatch):
++        from soup_cli.commands.ship import _live_eval_numerics
++        from soup_cli.utils import gpu
++
++        monkeypatch.setattr(gpu, "bf16_fp16_flags", lambda device: (False, True))
++        assert _live_eval_numerics(None, "cuda:0") == "float16"
++
+     def test_gptq_config_family_is_full(self):
+         from soup_cli.commands.ship import _expected_numerics_family
+         from soup_cli.config.schema import SoupConfig
+-- 
+2.54.0.windows.1
+

@@ -1,0 +1,34 @@
+== A. weight checks (saved adapter on disk)
+{
+ "lora_B_tensors": 96,
+ "expected_tensors": 96,
+ "missing": [],
+ "zero_B_tensors": [],
+ "min_delta_rel": 0.0008169290376827121,
+ "max_delta_rel": 0.0056914458982646465,
+ "ref_adapter_is_zero": true
+}
+mean |dW|/|W| per layer: 0:2.89e-03 1:3.42e-03 2:3.51e-03 3:3.11e-03 4:3.05e-03 5:3.02e-03 6:3.01e-03 7:2.98e-03 8:2.86e-03 9:2.99e-03 10:3.11e-03 11:3.25e-03 12:3.33e-03 13:3.07e-03 14:2.91e-03 15:2.89e-03 16:2.95e-03 17:3.06e-03 18:2.81e-03 19:2.76e-03 20:2.73e-03 21:2.83e-03 22:2.74e-03 23:2.78e-03
+== B/C. scoring train (100 pairs)
+  trained  {"n": 100, "mean_margin": 2.054215196490288, "mean_margin_ci95": [1.6375666054487228, 2.5072246103286746], "accuracy": 0.82, "ties": 0, "sign_test_p": 6.147806615047977e-11}
+  zero     {"n": 100, "mean_margin": 0.0, "mean_margin_ci95": [0.0, 0.0], "accuracy": 0.0, "ties": 100, "sign_test_p": 1.0}
+  random   {"n": 100, "mean_margin": -0.01587191617488861, "mean_margin_ci95": [-0.023457712292671205, -0.008125431418418885], "accuracy": 0.38, "ties": 0, "sign_test_p": 0.020978735677851718}
+  length confound: pearson(margin, len_c-len_r)=-0.520  acc|chosen shorter=0.95  acc|chosen longer=0.61
+== B/C. scoring heldout (100 pairs)
+  trained  {"n": 100, "mean_margin": 1.8196701683998109, "mean_margin_ci95": [1.3587510333061217, 2.279735706806183], "accuracy": 0.84, "ties": 0, "sign_test_p": 2.6059358186561008e-12}
+  zero     {"n": 100, "mean_margin": 0.0, "mean_margin_ci95": [0.0, 0.0], "accuracy": 0.0, "ties": 100, "sign_test_p": 1.0}
+  random   {"n": 100, "mean_margin": -0.008364468097686768, "mean_margin_ci95": [-0.015732855796813966, -0.0011632795333862305], "accuracy": 0.43, "ties": 0, "sign_test_p": 0.19334790449564246}
+  length confound: pearson(margin, len_c-len_r)=-0.372  acc|chosen shorter=0.94  acc|chosen longer=0.59
+== verdict
+{
+ "run_is_real": true,
+ "generalises": true,
+ "checks": {
+  "every_target_module_has_nonzero_B": true,
+  "ref_adapter_is_identity": true,
+  "zero_control_margin_is_zero": true,
+  "learned_train_pairs": true,
+  "beats_random_control_on_train": true,
+  "generalises_heldout": true
+ }
+}

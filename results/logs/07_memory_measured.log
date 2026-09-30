@@ -1,0 +1,49 @@
+2026-09-30T04:17:48.879Z $ python memory_budget.py --config soup.yaml --soup-db soup.db --smi results/nvidia_smi.csv --out results/memory_budget_post.json
+2026-09-30T04:17:53.935Z Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+2026-09-30T04:17:56.891Z {
+2026-09-30T04:17:56.893Z  "model": "Qwen/Qwen2.5-0.5B-Instruct",
+2026-09-30T04:17:56.894Z  "shape": {
+2026-09-30T04:17:56.895Z   "hidden": 896,
+2026-09-30T04:17:56.897Z   "intermediate": 4864,
+2026-09-30T04:17:56.898Z   "layers": 24,
+2026-09-30T04:17:56.898Z   "vocab": 151936,
+2026-09-30T04:17:56.901Z   "kv_dim": 128
+2026-09-30T04:17:56.902Z  },
+2026-09-30T04:17:56.908Z  "batch": 2,
+2026-09-30T04:17:56.909Z  "rows_per_step": 4,
+2026-09-30T04:17:56.910Z  "seq_len": 512,
+2026-09-30T04:17:56.920Z  "tokens_per_step": 2048,
+2026-09-30T04:17:56.921Z  "layer_params": 14912384,
+2026-09-30T04:17:56.923Z  "embed_params": 136134656,
+2026-09-30T04:17:56.923Z  "adapter_params": 2162688,
+2026-09-30T04:17:56.924Z  "terms_GB": {
+2026-09-30T04:17:56.925Z   "layer_buffers (stream_buffers x one fp16 layer)": 0.06,
+2026-09-30T04:17:56.926Z   "embeddings / tied lm_head (fp16, resident)": 0.272,
+2026-09-30T04:17:56.934Z   "lora weights+grads+adam (16 B/param)": 0.035,
+2026-09-30T04:17:56.935Z   "dpo ref adapter copy (fp32)": 0.009,
+2026-09-30T04:17:56.936Z   "checkpointed layer inputs (L x tokens x h x 2B)": 0.088,
+2026-09-30T04:17:56.937Z   "one layer recompute (attn+mlp, ~ tokens x (4h + 3i) x 2B)": 0.074,
+2026-09-30T04:17:56.938Z   "policy logits + loss (tokens x vocab x 14 B)": 4.356,
+2026-09-30T04:17:56.939Z   "ref pass (not counted at peak, transient)": 0.0
+2026-09-30T04:17:56.941Z  },
+2026-09-30T04:17:56.942Z  "first_pass_peak_GB": 4.894,
+2026-09-30T04:17:56.943Z  "correction_ref_pass_overlaps_policy_graph_GB (tokens x vocab x 4 B)": 1.245,
+2026-09-30T04:17:56.944Z  "predicted_allocator_peak_GB": 6.139,
+2026-09-30T04:17:56.946Z  "predicted_allocator_peak_GiB": 5.717,
+2026-09-30T04:17:56.947Z  "logit_bytes_per_element_implied": 18,
+2026-09-30T04:17:56.948Z  "not_in_allocator_peak": {
+2026-09-30T04:17:56.949Z   "cuda_context_and_kernels": "~0.3-0.5 GB, visible to nvidia-smi only",
+2026-09-30T04:17:56.950Z   "allocator_cache (reserved - allocated)": "fragmentation, visible to nvidia-smi only"
+2026-09-30T04:17:56.952Z  },
+2026-09-30T04:17:56.953Z  "host_GB": {
+2026-09-30T04:17:56.954Z   "pinned host RAM for streamed base (L x layer fp16)": 0.716
+2026-09-30T04:17:56.955Z  },
+2026-09-30T04:17:56.956Z  "measured": {
+2026-09-30T04:17:56.956Z   "soup_logged_peak_raw": "5.6/14.6 GB",
+2026-09-30T04:17:56.957Z   "soup_logged_peak_as_GB": 6.01,
+2026-09-30T04:17:56.958Z   "nvidia_smi_peak_MiB": 9391.0,
+2026-09-30T04:17:56.959Z   "nvidia_smi_peak_GB": 9.85,
+2026-09-30T04:17:56.960Z   "nvidia_smi_samples": 948
+2026-09-30T04:17:56.961Z  }
+2026-09-30T04:17:56.962Z }
+2026-09-30T04:17:57.989Z [exit code 0]

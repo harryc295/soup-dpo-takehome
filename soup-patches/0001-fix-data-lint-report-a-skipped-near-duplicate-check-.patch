@@ -1,0 +1,195 @@
+From 3c81311d68541051375a2d61e6a25534c3c9a0fa Mon Sep 17 00:00:00 2001
+From: harryc295 <corcoranharry4@gmail.com>
+Date: Wed, 30 Sep 2026 05:11:31 +0100
+Subject: [PATCH 1/3] fix(data-lint): report a skipped near-duplicate check as
+ SKIPPED, not OK
+
+---
+ changelog.d/0.75.1/1476.fixed.md     |  4 +++
+ src/soup_cli/commands/data_doctor.py |  9 ++++--
+ src/soup_cli/utils/data_lint.py      | 23 ++++++++++-----
+ tests/test_v07127.py                 | 44 +++++++++++++++++++++++++++-
+ 4 files changed, 70 insertions(+), 10 deletions(-)
+ create mode 100644 changelog.d/0.75.1/1476.fixed.md
+
+diff --git a/changelog.d/0.75.1/1476.fixed.md b/changelog.d/0.75.1/1476.fixed.md
+new file mode 100644
+index 0000000..df9d141
+--- /dev/null
++++ b/changelog.d/0.75.1/1476.fixed.md
+@@ -0,0 +1,4 @@
++- ``soup data lint`` no longer reports a check that never ran as ``OK``. When
++  ``datasketch`` is not installed the near-duplicate check now reports
++  ``SKIPPED`` (yellow), and the summary line says how many checks were skipped.
++  A skipped check does not change the overall verdict or the exit code.
+diff --git a/src/soup_cli/commands/data_doctor.py b/src/soup_cli/commands/data_doctor.py
+index 849cd7e..4776443 100644
+--- a/src/soup_cli/commands/data_doctor.py
++++ b/src/soup_cli/commands/data_doctor.py
+@@ -40,7 +40,8 @@ _PREFERENCE_FORMATS = ("dpo", "kto")
+ 
+ 
+ def _verdict_style(verdict: str) -> str:
+-    return {"OK": "green", "MINOR": "yellow", "MAJOR": "red"}.get(verdict, "white")
++    styles = {"OK": "green", "MINOR": "yellow", "MAJOR": "red", "SKIPPED": "yellow"}
++    return styles.get(verdict, "white")
+ 
+ 
+ _AnyCheck = Union[engine.DoctorCheck, lint_engine.LintCheck]
+@@ -75,10 +76,14 @@ def _render_doctor_report(report: engine.DoctorReport) -> None:
+ 
+ def _render_lint_report(report: lint_engine.LintReport) -> None:
+     _render_checks_table(f"soup data lint ({escape(report.fmt)})", report.checks)
++    skipped = report.skipped_count
++    skipped_note = (
++        f", [yellow]{skipped} check{'s' if skipped != 1 else ''} skipped[/]" if skipped else ""
++    )
+     console.print(
+         Panel.fit(
+             f"[bold {_verdict_style(report.overall)}]{report.overall}[/] — "
+-            f"{report.rows_scanned}/{report.total_rows} rows scanned",
++            f"{report.rows_scanned}/{report.total_rows} rows scanned{skipped_note}",
+             title="overall",
+         )
+     )
+diff --git a/src/soup_cli/utils/data_lint.py b/src/soup_cli/utils/data_lint.py
+index f7adc61..37562b4 100644
+--- a/src/soup_cli/utils/data_lint.py
++++ b/src/soup_cli/utils/data_lint.py
+@@ -23,7 +23,9 @@ Five checks:
+ 
+ Same OK / MINOR / MAJOR taxonomy as ``utils/data_doctor.py`` (imported from
+ there to keep one source of truth for the two doctor/lint twins shipped in
+-the same release).
++the same release), plus SKIPPED for a check that could not run (a missing
++optional dependency). SKIPPED never raises the overall verdict, but it is
++reported so an unrun check cannot pass as OK.
+ 
+ No top-level torch / transformers import.
+ """
+@@ -36,6 +38,9 @@ from typing import Any, Callable, List, Mapping, Sequence, Tuple
+ 
+ from soup_cli.utils.data_doctor import VERDICTS, sample_indices
+ 
++SKIPPED = "SKIPPED"
++LINT_VERDICTS: Tuple[str, ...] = (*VERDICTS, SKIPPED)
++
+ CHECKS: Tuple[str, ...] = (
+     "length_bias",
+     "label_imbalance",
+@@ -65,8 +70,8 @@ class LintCheck:
+     def __post_init__(self) -> None:
+         if self.name not in CHECKS:
+             raise ValueError(f"unknown lint check {self.name!r}")
+-        if self.verdict not in VERDICTS:
+-            raise ValueError(f"verdict must be one of {VERDICTS}, got {self.verdict!r}")
++        if self.verdict not in LINT_VERDICTS:
++            raise ValueError(f"verdict must be one of {LINT_VERDICTS}, got {self.verdict!r}")
+         for attr in ("message", "evidence"):
+             value = getattr(self, attr)
+             if not isinstance(value, str):
+@@ -78,7 +83,7 @@ class LintCheck:
+ 
+ 
+ def _overall_verdict(checks: Sequence[LintCheck]) -> str:
+-    rank = {"OK": 0, "MINOR": 1, "MAJOR": 2}
++    rank = {"OK": 0, "MINOR": 1, "MAJOR": 2, SKIPPED: 0}
+     worst = "OK"
+     for check in checks:
+         if not isinstance(check, LintCheck):
+@@ -113,6 +118,10 @@ class LintReport:
+         if self.rows_scanned > self.total_rows:
+             raise ValueError("rows_scanned cannot exceed total_rows")
+ 
++    @property
++    def skipped_count(self) -> int:
++        return sum(1 for check in self.checks if check.verdict == SKIPPED)
++
+     def to_dict(self) -> dict:
+         return {
+             "fmt": self.fmt,
+@@ -309,14 +318,14 @@ def check_near_duplicates(
+ ) -> LintCheck:
+     """MinHash/LSH near-duplicate detection (mirrors ``commands/data.py::dedup``).
+     MAJOR when >=20% of rows have a near-duplicate elsewhere in the sample,
+-    MINOR at >=5%, else OK. Degrades to an advisory OK (not a false "no
+-    duplicates" claim) when ``datasketch`` isn't installed."""
++    MINOR at >=5%, else OK. Reports SKIPPED (not a false "no duplicates"
++    OK) when ``datasketch`` isn't installed."""
+     try:
+         from datasketch import MinHash, MinHashLSH  # noqa: PLC0415
+     except ImportError:
+         return LintCheck(
+             name="near_duplicates",
+-            verdict="OK",
++            verdict=SKIPPED,
+             message="near-dup check skipped (datasketch not installed)",
+             evidence="pip install \"soup-cli[data]\" to enable",
+         )
+diff --git a/tests/test_v07127.py b/tests/test_v07127.py
+index e01f629..a04653d 100644
+--- a/tests/test_v07127.py
++++ b/tests/test_v07127.py
+@@ -1132,6 +1132,14 @@ class TestLintCheck:
+         c = LintCheck(name="length_bias", verdict="OK", message="fine", evidence="")
+         assert c.verdict == "OK"
+ 
++    def test_skipped_verdict_never_raises_overall(self):
++        from soup_cli.utils.data_lint import LintCheck, compose_lint_report
++
++        skipped = LintCheck(name="near_duplicates", verdict="SKIPPED", message="skipped")
++        report = compose_lint_report([skipped], fmt="dpo", rows_scanned=1, total_rows=1)
++        assert report.overall == "OK"
++        assert report.skipped_count == 1
++
+     def test_rejects_unknown_name(self):
+         from soup_cli.utils.data_lint import LintCheck
+ 
+@@ -1448,9 +1456,43 @@ class TestCheckNearDuplicatesNoDep:
+ 
+         rows = [{"prompt": "x", "chosen": "a", "rejected": "b"}]
+         c = check_near_duplicates(rows, key_fn=lambda r: r["prompt"])
+-        assert c.verdict == "OK"
++        assert c.verdict == "SKIPPED"
+         assert "skip" in c.message.lower()
+ 
++    def test_skipped_check_is_reported_not_passed(self, monkeypatch, tmp_path):
++        """A check that never ran must not read as OK: the lint report counts it,
++        the summary line says so, and the exit code stays 0 (skipped is not MAJOR)."""
++        import builtins
++
++        real_import = builtins.__import__
++
++        def fake_import(name, *args, **kwargs):
++            if name == "datasketch":
++                raise ImportError("no datasketch")
++            return real_import(name, *args, **kwargs)
++
++        monkeypatch.setattr(builtins, "__import__", fake_import)
++        from soup_cli.cli import app
++        from soup_cli.utils.data_lint import run_lint
++
++        rows = [
++            {"prompt": f"q{i}", "chosen": "a reasonable answer", "rejected": "a different answer"}
++            for i in range(10)
++        ]
++        report = run_lint(rows, fmt="dpo")
++        verdicts = {c.name: c.verdict for c in report.checks}
++        assert verdicts["near_duplicates"] == "SKIPPED"
++        assert report.skipped_count == 1
++        assert report.overall == "OK"
++
++        monkeypatch.chdir(tmp_path)
++        data_path = tmp_path / "pref.jsonl"
++        _write_jsonl(data_path, rows)
++        result = runner.invoke(app, ["data", "lint", str(data_path)])
++        assert result.exit_code == 0, result.output
++        assert "SKIPPED" in result.output
++        assert "1 check skipped" in result.output
++
+ 
+ class TestRunLint:
+     def test_dpo_happy_path(self):
+-- 
+2.54.0.windows.1
+

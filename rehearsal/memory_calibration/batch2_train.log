@@ -1,0 +1,86 @@
+Loading config from smoke.yaml...
+┌────────────────────────────── Training Setup ───────────────────────────────┐
+│ Device:  NVIDIA GeForce RTX 4060 Ti                                         │
+│ Memory:  8.0 GB                                                             │
+│ Model:   Qwen/Qwen2.5-0.5B-Instruct                                         │
+│ Task:    dpo                                                                │
+│ Backend: transformers                                                       │
+│ LoRA:    r=16, alpha=32                                                     │
+│ Quant:   none                                                               │
+│ Seed:    42                                                                 │
+└─────────────────────────────────────────────────────────────────────────────┘
+Loading dataset...
+Loaded: 32 train samples
+Run ID: run_20260930_043140_bcbcfd8e
+Setting up model + trainer...
+W0930 04:31:44.596000 37748 Lib\site-packages\torch\utils\flop_counter.py:29] triton not found; flop counting will not work for triton kernels
+Loading tokenizer: Qwen/Qwen2.5-0.5B-Instruct
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Fetching 6 files:   0%|          | 0/6 [00:00<?, ?it/s]Fetching 6 files:  83%|████████▎ | 5/6 [00:00<00:00, 36.23it/s]Fetching 6 files: 100%|██████████| 6/6 [00:09<00:00,  1.60s/it]
+┌────────────────────── Layer streaming disk pre-flight ──────────────────────┐
+│ HF/local source: 0.99 GB                                                    │
+│ Soup materialized copy: 0.00 GB (no write required)                         │
+│ Layer-shard cache: 0.99 GB (write required)                                 │
+│ Projected total on disk: 1.98 GB                                            │
+│ Additional writes before training: 0.99 GB                                  │
+│ Free on target volume (layer-shard cache): 56.99 GB                         │
+└─────────────────────────────────────────────────────────────────────────────┘
+Preparing layer shards -> 
+C:\Users\corco\.soup\layer-stream\Qwen__Qwen2.5-0.5B-Instruct
+Re-sharding layer cache: cache index is missing or unreadable.
+┌────────────────────────── training.stream_layers ───────────────────────────┐
+│ Layer streaming BETA — arch qwen2, tier ram                                 │
+│   base store   0.72 GB across 24 layers (pinned)                            │
+│   VRAM buffers 2 x 30 MB + 1 x 0 MB large-layer slot = 60 MB                │
+│   resident     272 MB extras + adapters                                     │
+│   peak VRAM    ~4.88 GB at batch 2 x seq 512 (4 rows — chosen+rejected are  │
+│ one concatenated tensor) (logits 4.36 GB)                                   │
+│   free VRAM    7.40 GB                                                      │
+│   forecast     9771-14369 tok/s — a compute-bound bound, not a promise      │
+│                (from 42.59 TFLOPS measured on this card now using bfloat16  │
+│ @ 2565 MHz)                                                                 │
+│   ! accumulating 4x at batch 2: the base is re-read once per micro-batch.   │
+│ Per token that is free, but reaching effective batch 8 by raising           │
+│ training.batch_size instead measured ~2.5x faster. Accumulation holds peak  │
+│ VRAM flat, so raise batch_size while the budget above allows, then          │
+│ accumulate for the rest.                                                    │
+└─────────────────────────────────────────────────────────────────────────────┘
+Layer streaming is BETA: slower than resident training, but this model may not 
+run resident on this card at all.
+expandable_segments allocator hint not enabled: Windows ignores it — torch 
+warns and carries on
+[transformers] `torch_dtype` is deprecated! Use `dtype` instead!
+Layer streaming ready: 24 layers, 0.72 GB pinned RAM store, 2 x 30 MB decoder 
+buffers + 1 x 0 MB large-layer slot
+LoRA applied: 2,162,688 trainable / 494,032,768 total (0.44%)
+Tokenizing train dataset:   0%|          | 0/32 [00:00<?, ? examples/s]Tokenizing train dataset: 100%|██████████| 32/32 [00:00<00:00, 453.17 examples/s]
+[transformers] The model is already on multiple devices. Skipping the move to device specified in `args`.
+Map:   0%|          | 0/32 [00:00<?, ? examples/s]Map: 100%|██████████| 32/32 [00:00<00:00, 4262.23 examples/s]
+Training started!
+
+[transformers] The tokenizer has new PAD/BOS/EOS tokens that differ from the model config and generation config. The model config and generation config were aligned accordingly, being updated with the tokenizer's values. Updated tokens: {'bos_token_id': None, 'pad_token_id': 151643}.
+  0%|          | 0/4 [00:00<?, ?it/s] 25%|██▌       | 1/4 [00:09<00:29,  9.89s/it]                                              25%|██▌       | 1/4 [00:09<00:29,  9.89s/it] 50%|█████     | 2/4 [00:18<00:17,  8.94s/it]                                              50%|█████     | 2/4 [00:18<00:17,  8.94s/it] 75%|███████▌  | 3/4 [00:29<00:09,  9.87s/it]                                              75%|███████▌  | 3/4 [00:29<00:09,  9.87s/it]100%|██████████| 4/4 [00:39<00:00, 10.22s/it]                                             100%|██████████| 4/4 [00:39<00:00, 10.22s/it]                                             100%|██████████| 4/4 [00:40<00:00, 10.22s/it]100%|██████████| 4/4 [00:40<00:00, 10.14s/it]
+{'loss': '0.6931', 'grad_norm': '16.57', 'learning_rate': '5e-05', 'entropy': '1.337', 'num_tokens': '4472', 'logits/chosen': '-2.378', 'logits/rejected': '-2.646', 'mean_token_accuracy': '0.5645', 'rewards/chosen': '0', 'rewards/rejected': '0', 'rewards/accuracies': '0', 'rewards/margins': '0', 'logps/chosen': '-152.3', 'logps/rejected': '-224.7', 'epoch': '0.25'}
+{'loss': '0.6697', 'grad_norm': '18.61', 'learning_rate': '4.268e-05', 'entropy': '1.318', 'num_tokens': '9445', 'logits/chosen': '-2.178', 'logits/rejected': '-2.169', 'mean_token_accuracy': '0.6182', 'rewards/chosen': '-0.04829', 'rewards/rejected': '-0.09798', 'rewards/accuracies': '0.75', 'rewards/margins': '0.04969', 'logps/chosen': '-324.7', 'logps/rejected': '-295.1', 'epoch': '0.5'}
+{'loss': '0.5686', 'grad_norm': '21.07', 'learning_rate': '2.5e-05', 'entropy': '1.321', 'num_tokens': '1.468e+04', 'logits/chosen': '-2.226', 'logits/rejected': '-2.749', 'mean_token_accuracy': '0.5832', 'rewards/chosen': '-0.1099', 'rewards/rejected': '-0.391', 'rewards/accuracies': '1', 'rewards/margins': '0.281', 'logps/chosen': '-347.6', 'logps/rejected': '-399.1', 'epoch': '0.75'}
+{'loss': '0.6163', 'grad_norm': '14.97', 'learning_rate': '7.322e-06', 'entropy': '1.426', 'num_tokens': '1.973e+04', 'logits/chosen': '-2.155', 'logits/rejected': '-2.604', 'mean_token_accuracy': '0.5783', 'rewards/chosen': '-0.1494', 'rewards/rejected': '-0.3225', 'rewards/accuracies': '0.625', 'rewards/margins': '0.1731', 'logps/chosen': '-317.3', 'logps/rejected': '-281', 'epoch': '1'}
+{'train_runtime': '40.57', 'train_samples_per_second': '0.789', 'train_steps_per_second': '0.099', 'train_loss': '0.6369', 'epoch': '1'}
+┌───────────────── Soup Training: Qwen/Qwen2.5-0.5B-Instruct ─────────────────┐
+│ Epoch 1.0/1   100%                                                          │
+│ Step:  4/4                                                                  │
+│ Loss:  0.6163    LR: 7.32e-06                                               │
+│ Speed: 0.10 it/s                                                            │
+│ GPU peak: 5.6/8.0 GB                                                        │
+│ Grad:  14.9659                                                              │
+└──────────────────────── NVIDIA GeForce RTX 4060 Ti ─────────────────────────┘┌──────────────────────────── Training Complete! ─────────────────────────────┐
+│ Loss: 0.6931 -> 0.6163                                                      │
+│ Duration: 0m                                                                │
+│ Output: out-smoke                                                           │
+│ Run ID: run_20260930_043140_bcbcfd8e                                        │
+│                                                                             │
+│ Quick test:  soup chat --model out-smoke                                    │
+│ Push to HF:  soup push --model out-smoke                                    │
+│ Merge LoRA:  soup merge --adapter out-smoke                                 │
+│ Export GGUF: soup export --model out-smoke                                  │
+│ Run details: soup runs show run_20260930_043140_bcbcfd8e                    │
+└─────────────────────────────────────────────────────────────────────────────┘

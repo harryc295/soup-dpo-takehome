@@ -1,0 +1,601 @@
+2026-09-30T04:22:09.362Z $ soup train --config soup_lenbal.yaml -y
+2026-09-30T04:22:10.134Z Loading config from soup_lenbal.yaml...
+2026-09-30T04:22:11.937Z ╭─────────────────────────────── Training Setup ───────────────────────────────╮
+2026-09-30T04:22:11.938Z │ Device:  Tesla T4                                                            │
+2026-09-30T04:22:11.939Z │ Memory:  14.6 GB                                                             │
+2026-09-30T04:22:11.940Z │ Model:   Qwen/Qwen2.5-0.5B-Instruct                                          │
+2026-09-30T04:22:11.943Z │ Task:    dpo                                                                 │
+2026-09-30T04:22:11.944Z │ Backend: transformers                                                        │
+2026-09-30T04:22:11.946Z │ LoRA:    r=16, alpha=32                                                      │
+2026-09-30T04:22:11.947Z │ Quant:   none                                                                │
+2026-09-30T04:22:11.948Z │ Seed:    42                                                                  │
+2026-09-30T04:22:11.950Z ╰──────────────────────────────────────────────────────────────────────────────╯
+2026-09-30T04:22:11.951Z Loading dataset...
+2026-09-30T04:22:11.962Z Loaded: 400 train samples
+2026-09-30T04:22:12.016Z Run ID: run_20260930_042212_82cb7695
+2026-09-30T04:22:12.017Z Setting up model + trainer...
+2026-09-30T04:22:22.272Z Loading tokenizer: Qwen/Qwen2.5-0.5B-Instruct
+2026-09-30T04:22:22.569Z Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+2026-09-30T04:22:24.675Z ╭────────────────────── Layer streaming disk pre-flight ───────────────────────╮
+2026-09-30T04:22:24.676Z │ HF/local source: 0.99 GB                                                     │
+2026-09-30T04:22:24.676Z │ Soup materialized copy: 0.99 GB (no write required)                          │
+2026-09-30T04:22:24.677Z │ Layer-shard cache: 0.99 GB (reusable)                                        │
+2026-09-30T04:22:24.677Z │ Projected total on disk: 2.96 GB                                             │
+2026-09-30T04:22:24.679Z │ Additional writes before training: 0.00 GB                                   │
+2026-09-30T04:22:24.680Z ╰──────────────────────────────────────────────────────────────────────────────╯
+2026-09-30T04:22:24.681Z Preparing layer shards -> /root/.soup/layer-stream/Qwen__Qwen2.5-0.5B-Instruct
+2026-09-30T04:22:25.290Z ╭─────────────────────────── training.stream_layers ───────────────────────────╮
+2026-09-30T04:22:25.292Z │ Layer streaming BETA — arch qwen2, tier ram                                  │
+2026-09-30T04:22:25.294Z │   base store   0.72 GB across 24 layers (pinned)                             │
+2026-09-30T04:22:25.295Z │   VRAM buffers 2 x 30 MB + 1 x 0 MB large-layer slot = 60 MB                 │
+2026-09-30T04:22:25.296Z │   resident     272 MB extras + adapters                                      │
+2026-09-30T04:22:25.297Z │   peak VRAM    ~4.88 GB at batch 2 x seq 512 (4 rows — chosen+rejected are   │
+2026-09-30T04:22:25.297Z │ one concatenated tensor) (logits 4.36 GB)                                    │
+2026-09-30T04:22:25.298Z │   free VRAM    15.51 GB                                                      │
+2026-09-30T04:22:25.298Z │   forecast     5901-8678 tok/s — a compute-bound bound, not a promise        │
+2026-09-30T04:22:25.299Z │                (from 25.72 TFLOPS measured on this card now using float16 @  │
+2026-09-30T04:22:25.299Z │ 915 MHz)                                                                     │
+2026-09-30T04:22:25.300Z │   ! accumulating 4x at batch 2: the base is re-read once per micro-batch.    │
+2026-09-30T04:22:25.300Z │ Per token that is free, but reaching effective batch 8 by raising            │
+2026-09-30T04:22:25.301Z │ training.batch_size instead measured ~2.5x faster. Accumulation holds peak   │
+2026-09-30T04:22:25.301Z │ VRAM flat, so raise batch_size while the budget above allows, then           │
+2026-09-30T04:22:25.302Z │ accumulate for the rest.                                                     │
+2026-09-30T04:22:25.303Z ╰──────────────────────────────────────────────────────────────────────────────╯
+2026-09-30T04:22:25.303Z Layer streaming is BETA: slower than resident training, but this model may not 
+2026-09-30T04:22:25.304Z run resident on this card at all.
+2026-09-30T04:22:25.304Z expandable_segments allocator hint not enabled: CUDA was already initialised 
+2026-09-30T04:22:25.305Z before Soup could set it — the allocator reads PYTORCH_CUDA_ALLOC_CONF once, at 
+2026-09-30T04:22:25.306Z context creation
+2026-09-30T04:22:25.543Z [transformers] `torch_dtype` is deprecated! Use `dtype` instead!
+2026-09-30T04:22:26.948Z Layer streaming ready: 24 layers, 0.72 GB pinned RAM store, 2 x 30 MB decoder 
+2026-09-30T04:22:26.949Z buffers + 1 x 0 MB large-layer slot
+2026-09-30T04:22:26.955Z LoRA applied: 2,162,688 trainable / 494,032,768 total (0.44%)
+2026-09-30T04:22:29.840Z 
+2026-09-30T04:22:29.949Z Tokenizing train dataset:   0%|          | 0/400 [00:00<?, ? examples/s]
+2026-09-30T04:22:30.054Z Tokenizing train dataset:   6%|▋         | 26/400 [00:00<00:01, 238.31 examples/s]
+2026-09-30T04:22:30.158Z Tokenizing train dataset:  14%|█▍        | 56/400 [00:00<00:01, 265.35 examples/s]
+2026-09-30T04:22:30.260Z Tokenizing train dataset:  22%|██▏       | 88/400 [00:00<00:01, 284.74 examples/s]
+2026-09-30T04:22:30.362Z Tokenizing train dataset:  30%|███       | 120/400 [00:00<00:00, 296.18 examples/s]
+2026-09-30T04:22:30.524Z Tokenizing train dataset:  39%|███▉      | 155/400 [00:00<00:00, 312.41 examples/s]
+2026-09-30T04:22:30.681Z Tokenizing train dataset:  50%|█████     | 201/400 [00:00<00:00, 299.98 examples/s]
+2026-09-30T04:22:30.783Z Tokenizing train dataset:  61%|██████▏   | 245/400 [00:00<00:00, 292.52 examples/s]
+2026-09-30T04:22:30.885Z Tokenizing train dataset:  70%|██████▉   | 279/400 [00:00<00:00, 303.34 examples/s]
+2026-09-30T04:22:31.038Z Tokenizing train dataset:  78%|███████▊  | 312/400 [00:01<00:00, 308.84 examples/s]
+2026-09-30T04:22:31.143Z Tokenizing train dataset:  89%|████████▉ | 356/400 [00:01<00:00, 300.47 examples/s]
+2026-09-30T04:22:31.248Z Tokenizing train dataset:  97%|█████████▋| 388/400 [00:01<00:00, 301.64 examples/s]
+2026-09-30T04:22:31.249Z Tokenizing train dataset: 100%|██████████| 400/400 [00:01<00:00, 284.05 examples/s]
+2026-09-30T04:22:31.257Z [transformers] The model is already on multiple devices. Skipping the move to device specified in `args`.
+2026-09-30T04:22:31.268Z 
+2026-09-30T04:22:31.372Z Map:   0%|          | 0/400 [00:00<?, ? examples/s]
+2026-09-30T04:22:31.501Z Map:  54%|█████▍    | 215/400 [00:00<00:00, 2084.95 examples/s]
+2026-09-30T04:22:31.501Z Map: 100%|██████████| 400/400 [00:00<00:00, 1722.67 examples/s]
+2026-09-30T04:22:31.520Z Training started!
+2026-09-30T04:22:31.521Z 
+2026-09-30T04:22:31.528Z [transformers] The tokenizer has new PAD/BOS/EOS tokens that differ from the model config and generation config. The model config and generation config were aligned accordingly, being updated with the tokenizer's values. Updated tokens: {'bos_token_id': None, 'pad_token_id': 151643}.
+2026-09-30T04:22:31.905Z 
+2026-09-30T04:22:35.289Z   0%|          | 0/100 [00:00<?, ?it/s]
+2026-09-30T04:22:35.290Z   1%|          | 1/100 [00:03<05:34,  3.38s/it]
+2026-09-30T04:22:35.291Z                                                
+2026-09-30T04:22:35.293Z {'loss': '0.6931', 'grad_norm': 'nan', 'learning_rate': '0', 'entropy': '1.668', 'num_tokens': '5208', 'logits/chosen': '-2.185', 'logits/rejected': '-1.658', 'mean_token_accuracy': '0.6515', 'rewards/chosen': '0', 'rewards/rejected': '0', 'rewards/accuracies': '0', 'rewards/margins': '0', 'logps/chosen': '-215.7', 'logps/rejected': '-200.7', 'epoch': '0.02'}
+2026-09-30T04:22:35.295Z 
+2026-09-30T04:22:38.420Z   1%|          | 1/100 [00:03<05:34,  3.38s/it]
+2026-09-30T04:22:38.421Z   2%|▏         | 2/100 [00:06<05:17,  3.23s/it]
+2026-09-30T04:22:38.422Z                                                
+2026-09-30T04:22:38.423Z {'loss': '0.6931', 'grad_norm': '14.91', 'learning_rate': '0', 'entropy': '1.181', 'num_tokens': '9997', 'logits/chosen': '-2.474', 'logits/rejected': '-2.283', 'mean_token_accuracy': '0.6643', 'rewards/chosen': '0', 'rewards/rejected': '0', 'rewards/accuracies': '0', 'rewards/margins': '0', 'logps/chosen': '-195.7', 'logps/rejected': '-225', 'epoch': '0.04'}
+2026-09-30T04:22:38.424Z 
+2026-09-30T04:22:41.029Z   2%|▏         | 2/100 [00:06<05:17,  3.23s/it]
+2026-09-30T04:22:41.030Z   3%|▎         | 3/100 [00:09<04:46,  2.95s/it]
+2026-09-30T04:22:41.032Z                                                
+2026-09-30T04:22:41.033Z {'loss': '0.6931', 'grad_norm': 'nan', 'learning_rate': '5e-06', 'entropy': '1.382', 'num_tokens': '1.364e+04', 'logits/chosen': '-2.389', 'logits/rejected': '-2.587', 'mean_token_accuracy': '0.6609', 'rewards/chosen': '0', 'rewards/rejected': '0', 'rewards/accuracies': '0', 'rewards/margins': '0', 'logps/chosen': '-207.7', 'logps/rejected': '-263.5', 'epoch': '0.06'}
+2026-09-30T04:22:41.034Z 
+2026-09-30T04:22:44.307Z   3%|▎         | 3/100 [00:09<04:46,  2.95s/it]
+2026-09-30T04:22:44.308Z   4%|▍         | 4/100 [00:12<04:55,  3.08s/it]
+2026-09-30T04:22:44.310Z                                                
+2026-09-30T04:22:44.311Z {'loss': '0.6931', 'grad_norm': '17.26', 'learning_rate': '5e-06', 'entropy': '1.064', 'num_tokens': '1.921e+04', 'logits/chosen': '-1.931', 'logits/rejected': '-2.399', 'mean_token_accuracy': '0.6853', 'rewards/chosen': '0', 'rewards/rejected': '0', 'rewards/accuracies': '0', 'rewards/margins': '0', 'logps/chosen': '-252.2', 'logps/rejected': '-278.8', 'epoch': '0.08'}
+2026-09-30T04:22:44.313Z 
+2026-09-30T04:22:47.672Z   4%|▍         | 4/100 [00:12<04:55,  3.08s/it]
+2026-09-30T04:22:47.674Z   5%|▌         | 5/100 [00:15<05:02,  3.18s/it]
+2026-09-30T04:22:47.676Z                                                
+2026-09-30T04:22:47.676Z {'loss': '0.6913', 'grad_norm': '15.43', 'learning_rate': '1e-05', 'entropy': '1.376', 'num_tokens': '2.514e+04', 'logits/chosen': '-2.977', 'logits/rejected': '-2.945', 'mean_token_accuracy': '0.6255', 'rewards/chosen': '-0.003828', 'rewards/rejected': '-0.007622', 'rewards/accuracies': '0.5', 'rewards/margins': '0.003794', 'logps/chosen': '-317', 'logps/rejected': '-296.9', 'epoch': '0.1'}
+2026-09-30T04:22:47.676Z 
+2026-09-30T04:22:51.270Z   5%|▌         | 5/100 [00:15<05:02,  3.18s/it]
+2026-09-30T04:22:51.271Z   6%|▌         | 6/100 [00:19<05:12,  3.32s/it]
+2026-09-30T04:22:51.273Z                                                
+2026-09-30T04:22:51.274Z {'loss': '0.6847', 'grad_norm': '19.65', 'learning_rate': '1.5e-05', 'entropy': '1.651', 'num_tokens': '3.083e+04', 'logits/chosen': '-2.459', 'logits/rejected': '-2.78', 'mean_token_accuracy': '0.5491', 'rewards/chosen': '-0.01384', 'rewards/rejected': '-0.03095', 'rewards/accuracies': '0.75', 'rewards/margins': '0.01711', 'logps/chosen': '-507.5', 'logps/rejected': '-407.7', 'epoch': '0.12'}
+2026-09-30T04:22:51.276Z 
+2026-09-30T04:22:54.410Z   6%|▌         | 6/100 [00:19<05:12,  3.32s/it]
+2026-09-30T04:22:54.411Z   7%|▋         | 7/100 [00:22<05:03,  3.26s/it]
+2026-09-30T04:22:54.413Z                                                
+2026-09-30T04:22:54.414Z {'loss': '0.6694', 'grad_norm': '16.86', 'learning_rate': '2e-05', 'entropy': '1.402', 'num_tokens': '3.606e+04', 'logits/chosen': '-2.117', 'logits/rejected': '-2.185', 'mean_token_accuracy': '0.5796', 'rewards/chosen': '-0.007566', 'rewards/rejected': '-0.05583', 'rewards/accuracies': '0.875', 'rewards/margins': '0.04826', 'logps/chosen': '-273', 'logps/rejected': '-238.5', 'epoch': '0.14'}
+2026-09-30T04:22:54.416Z 
+2026-09-30T04:22:57.464Z   7%|▋         | 7/100 [00:22<05:03,  3.26s/it]
+2026-09-30T04:22:57.465Z   8%|▊         | 8/100 [00:25<04:54,  3.20s/it]
+2026-09-30T04:22:57.469Z                                                
+2026-09-30T04:22:57.469Z {'loss': '0.6606', 'grad_norm': '16.05', 'learning_rate': '2.5e-05', 'entropy': '1.167', 'num_tokens': '4.141e+04', 'logits/chosen': '-2.241', 'logits/rejected': '-2.375', 'mean_token_accuracy': '0.6262', 'rewards/chosen': '-0.02256', 'rewards/rejected': '-0.09047', 'rewards/accuracies': '0.75', 'rewards/margins': '0.06791', 'logps/chosen': '-244.9', 'logps/rejected': '-213.3', 'epoch': '0.16'}
+2026-09-30T04:22:57.471Z 
+2026-09-30T04:23:00.945Z   8%|▊         | 8/100 [00:25<04:54,  3.20s/it]
+2026-09-30T04:23:00.946Z   9%|▉         | 9/100 [00:29<04:58,  3.29s/it]
+2026-09-30T04:23:00.947Z                                                
+2026-09-30T04:23:00.948Z {'loss': '0.6741', 'grad_norm': '16.6', 'learning_rate': '3e-05', 'entropy': '1.293', 'num_tokens': '4.658e+04', 'logits/chosen': '-2.328', 'logits/rejected': '-2.478', 'mean_token_accuracy': '0.6023', 'rewards/chosen': '-0.08934', 'rewards/rejected': '-0.1436', 'rewards/accuracies': '0.625', 'rewards/margins': '0.05427', 'logps/chosen': '-357.1', 'logps/rejected': '-232.1', 'epoch': '0.18'}
+2026-09-30T04:23:00.949Z 
+2026-09-30T04:23:04.210Z   9%|▉         | 9/100 [00:29<04:58,  3.29s/it]
+2026-09-30T04:23:04.211Z  10%|█         | 10/100 [00:32<04:55,  3.28s/it]
+2026-09-30T04:23:04.212Z                                                 
+2026-09-30T04:23:04.214Z {'loss': '0.5598', 'grad_norm': '16.81', 'learning_rate': '3.5e-05', 'entropy': '1.351', 'num_tokens': '5.167e+04', 'logits/chosen': '-2.465', 'logits/rejected': '-2.761', 'mean_token_accuracy': '0.5916', 'rewards/chosen': '0.002125', 'rewards/rejected': '-0.292', 'rewards/accuracies': '1', 'rewards/margins': '0.2942', 'logps/chosen': '-218.8', 'logps/rejected': '-326.2', 'epoch': '0.2'}
+2026-09-30T04:23:04.214Z 
+2026-09-30T04:23:07.312Z  10%|█         | 10/100 [00:32<04:55,  3.28s/it]
+2026-09-30T04:23:07.313Z  11%|█         | 11/100 [00:35<04:47,  3.22s/it]
+2026-09-30T04:23:07.314Z                                                 
+2026-09-30T04:23:07.316Z {'loss': '0.6496', 'grad_norm': '14.05', 'learning_rate': '4e-05', 'entropy': '1.159', 'num_tokens': '5.705e+04', 'logits/chosen': '-1.713', 'logits/rejected': '-2.014', 'mean_token_accuracy': '0.6218', 'rewards/chosen': '-0.1111', 'rewards/rejected': '-0.2315', 'rewards/accuracies': '0.625', 'rewards/margins': '0.1204', 'logps/chosen': '-231.4', 'logps/rejected': '-221.8', 'epoch': '0.22'}
+2026-09-30T04:23:07.317Z 
+2026-09-30T04:23:10.350Z  11%|█         | 11/100 [00:35<04:47,  3.22s/it]
+2026-09-30T04:23:10.351Z  12%|█▏        | 12/100 [00:38<04:38,  3.17s/it]
+2026-09-30T04:23:10.352Z                                                 
+2026-09-30T04:23:10.356Z {'loss': '0.5954', 'grad_norm': '12.38', 'learning_rate': '4.5e-05', 'entropy': '0.7189', 'num_tokens': '6.164e+04', 'logits/chosen': '-2.313', 'logits/rejected': '-2.409', 'mean_token_accuracy': '0.7571', 'rewards/chosen': '-0.1305', 'rewards/rejected': '-0.3899', 'rewards/accuracies': '0.75', 'rewards/margins': '0.2594', 'logps/chosen': '-158.8', 'logps/rejected': '-188.7', 'epoch': '0.24'}
+2026-09-30T04:23:10.359Z 
+2026-09-30T04:23:13.697Z  12%|█▏        | 12/100 [00:38<04:38,  3.17s/it]
+2026-09-30T04:23:13.698Z  13%|█▎        | 13/100 [00:41<04:40,  3.22s/it]
+2026-09-30T04:23:13.701Z                                                 
+2026-09-30T04:23:13.702Z {'loss': '0.7059', 'grad_norm': 'nan', 'learning_rate': '5e-05', 'entropy': '1.552', 'num_tokens': '6.67e+04', 'logits/chosen': '-2.289', 'logits/rejected': '-2.531', 'mean_token_accuracy': '0.6227', 'rewards/chosen': '-0.1859', 'rewards/rejected': '-0.2279', 'rewards/accuracies': '0.5', 'rewards/margins': '0.04204', 'logps/chosen': '-299.4', 'logps/rejected': '-241.7', 'epoch': '0.26'}
+2026-09-30T04:23:13.703Z 
+2026-09-30T04:23:16.821Z  13%|█▎        | 13/100 [00:41<04:40,  3.22s/it]
+2026-09-30T04:23:16.822Z  14%|█▍        | 14/100 [00:44<04:34,  3.19s/it]
+2026-09-30T04:23:16.824Z                                                 
+2026-09-30T04:23:16.824Z {'loss': '0.6109', 'grad_norm': '15.24', 'learning_rate': '5e-05', 'entropy': '1.323', 'num_tokens': '7.202e+04', 'logits/chosen': '-2.045', 'logits/rejected': '-2.012', 'mean_token_accuracy': '0.6637', 'rewards/chosen': '-0.2359', 'rewards/rejected': '-0.6058', 'rewards/accuracies': '0.5', 'rewards/margins': '0.3699', 'logps/chosen': '-294.5', 'logps/rejected': '-374.6', 'epoch': '0.28'}
+2026-09-30T04:23:16.825Z 
+2026-09-30T04:23:19.874Z  14%|█▍        | 14/100 [00:44<04:34,  3.19s/it]
+2026-09-30T04:23:19.875Z  15%|█▌        | 15/100 [00:47<04:27,  3.15s/it]
+2026-09-30T04:23:19.877Z                                                 
+2026-09-30T04:23:19.878Z {'loss': '0.6908', 'grad_norm': '15.72', 'learning_rate': '4.998e-05', 'entropy': '1.152', 'num_tokens': '7.689e+04', 'logits/chosen': '-2.122', 'logits/rejected': '-2.592', 'mean_token_accuracy': '0.6776', 'rewards/chosen': '-0.298', 'rewards/rejected': '-0.4372', 'rewards/accuracies': '0.625', 'rewards/margins': '0.1393', 'logps/chosen': '-293.5', 'logps/rejected': '-181.8', 'epoch': '0.3'}
+2026-09-30T04:23:19.880Z 
+2026-09-30T04:23:23.081Z  15%|█▌        | 15/100 [00:47<04:27,  3.15s/it]
+2026-09-30T04:23:23.082Z  16%|█▌        | 16/100 [00:51<04:26,  3.17s/it]
+2026-09-30T04:23:23.084Z                                                 
+2026-09-30T04:23:23.085Z {'loss': '0.6842', 'grad_norm': '15.64', 'learning_rate': '4.994e-05', 'entropy': '1.342', 'num_tokens': '8.125e+04', 'logits/chosen': '-2.558', 'logits/rejected': '-2.475', 'mean_token_accuracy': '0.6516', 'rewards/chosen': '-0.2996', 'rewards/rejected': '-0.4689', 'rewards/accuracies': '0.5', 'rewards/margins': '0.1693', 'logps/chosen': '-240.2', 'logps/rejected': '-231.2', 'epoch': '0.32'}
+2026-09-30T04:23:23.086Z 
+2026-09-30T04:23:26.727Z  16%|█▌        | 16/100 [00:51<04:26,  3.17s/it]
+2026-09-30T04:23:26.728Z  17%|█▋        | 17/100 [00:54<04:34,  3.31s/it]
+2026-09-30T04:23:26.729Z                                                 
+2026-09-30T04:23:26.731Z {'loss': '0.5049', 'grad_norm': '11.01', 'learning_rate': '4.986e-05', 'entropy': '1.139', 'num_tokens': '8.662e+04', 'logits/chosen': '-2.272', 'logits/rejected': '-2.5', 'mean_token_accuracy': '0.6356', 'rewards/chosen': '-0.1571', 'rewards/rejected': '-0.6749', 'rewards/accuracies': '0.75', 'rewards/margins': '0.5178', 'logps/chosen': '-273.9', 'logps/rejected': '-252.5', 'epoch': '0.34'}
+2026-09-30T04:23:26.731Z 
+2026-09-30T04:23:30.013Z  17%|█▋        | 17/100 [00:54<04:34,  3.31s/it]
+2026-09-30T04:23:30.015Z  18%|█▊        | 18/100 [00:58<04:30,  3.30s/it]
+2026-09-30T04:23:30.016Z                                                 
+2026-09-30T04:23:30.017Z {'loss': '0.6691', 'grad_norm': '16.66', 'learning_rate': '4.976e-05', 'entropy': '1.318', 'num_tokens': '9.256e+04', 'logits/chosen': '-2.481', 'logits/rejected': '-2.472', 'mean_token_accuracy': '0.6187', 'rewards/chosen': '-0.4704', 'rewards/rejected': '-0.7299', 'rewards/accuracies': '0.625', 'rewards/margins': '0.2595', 'logps/chosen': '-414.4', 'logps/rejected': '-395.3', 'epoch': '0.36'}
+2026-09-30T04:23:30.017Z 
+2026-09-30T04:23:32.732Z  18%|█▊        | 18/100 [00:58<04:30,  3.30s/it]
+2026-09-30T04:23:32.734Z  19%|█▉        | 19/100 [01:00<04:13,  3.13s/it]
+2026-09-30T04:23:32.735Z                                                 
+2026-09-30T04:23:32.736Z {'loss': '0.6039', 'grad_norm': '14.88', 'learning_rate': '4.962e-05', 'entropy': '1.251', 'num_tokens': '9.687e+04', 'logits/chosen': '-2.427', 'logits/rejected': '-2.624', 'mean_token_accuracy': '0.6792', 'rewards/chosen': '-0.2234', 'rewards/rejected': '-0.6313', 'rewards/accuracies': '0.625', 'rewards/margins': '0.4079', 'logps/chosen': '-200.5', 'logps/rejected': '-228.4', 'epoch': '0.38'}
+2026-09-30T04:23:32.737Z 
+2026-09-30T04:23:36.085Z  19%|█▉        | 19/100 [01:00<04:13,  3.13s/it]
+2026-09-30T04:23:36.088Z  20%|██        | 20/100 [01:04<04:15,  3.19s/it]
+2026-09-30T04:23:36.092Z                                                 
+2026-09-30T04:23:36.092Z {'loss': '0.5052', 'grad_norm': '14.47', 'learning_rate': '4.945e-05', 'entropy': '1.553', 'num_tokens': '1.017e+05', 'logits/chosen': '-2.341', 'logits/rejected': '-2.63', 'mean_token_accuracy': '0.5704', 'rewards/chosen': '-0.318', 'rewards/rejected': '-1.115', 'rewards/accuracies': '0.875', 'rewards/margins': '0.7974', 'logps/chosen': '-408.9', 'logps/rejected': '-373.8', 'epoch': '0.4'}
+2026-09-30T04:23:36.093Z 
+2026-09-30T04:23:39.480Z  20%|██        | 20/100 [01:04<04:15,  3.19s/it]
+2026-09-30T04:23:39.481Z  21%|██        | 21/100 [01:07<04:17,  3.26s/it]
+2026-09-30T04:23:39.483Z                                                 
+2026-09-30T04:23:39.487Z {'loss': '0.2441', 'grad_norm': '9.024', 'learning_rate': '4.926e-05', 'entropy': '1.263', 'num_tokens': '1.069e+05', 'logits/chosen': '-2.314', 'logits/rejected': '-2.41', 'mean_token_accuracy': '0.5982', 'rewards/chosen': '0.02925', 'rewards/rejected': '-1.431', 'rewards/accuracies': '1', 'rewards/margins': '1.46', 'logps/chosen': '-256.9', 'logps/rejected': '-406.3', 'epoch': '0.42'}
+2026-09-30T04:23:39.487Z 
+2026-09-30T04:23:42.537Z  21%|██        | 21/100 [01:07<04:17,  3.26s/it]
+2026-09-30T04:23:42.539Z  22%|██▏       | 22/100 [01:10<04:09,  3.20s/it]
+2026-09-30T04:23:42.540Z                                                 
+2026-09-30T04:23:42.541Z {'loss': '0.4369', 'grad_norm': '13.37', 'learning_rate': '4.903e-05', 'entropy': '1.27', 'num_tokens': '1.13e+05', 'logits/chosen': '-2.185', 'logits/rejected': '-2.574', 'mean_token_accuracy': '0.6219', 'rewards/chosen': '-0.08998', 'rewards/rejected': '-1.077', 'rewards/accuracies': '0.875', 'rewards/margins': '0.9869', 'logps/chosen': '-418.7', 'logps/rejected': '-394.2', 'epoch': '0.44'}
+2026-09-30T04:23:42.543Z 
+2026-09-30T04:23:45.753Z  22%|██▏       | 22/100 [01:10<04:09,  3.20s/it]
+2026-09-30T04:23:45.754Z  23%|██▎       | 23/100 [01:13<04:06,  3.20s/it]
+2026-09-30T04:23:45.756Z                                                 
+2026-09-30T04:23:45.757Z {'loss': '0.8424', 'grad_norm': '23.39', 'learning_rate': '4.878e-05', 'entropy': '1.052', 'num_tokens': '1.181e+05', 'logits/chosen': '-2.434', 'logits/rejected': '-2.153', 'mean_token_accuracy': '0.6893', 'rewards/chosen': '-0.4328', 'rewards/rejected': '-0.4015', 'rewards/accuracies': '0.5', 'rewards/margins': '-0.03131', 'logps/chosen': '-255.2', 'logps/rejected': '-225.2', 'epoch': '0.46'}
+2026-09-30T04:23:45.757Z 
+2026-09-30T04:23:48.530Z  23%|██▎       | 23/100 [01:13<04:06,  3.20s/it]
+2026-09-30T04:23:48.532Z  24%|██▍       | 24/100 [01:16<03:53,  3.07s/it]
+2026-09-30T04:23:48.533Z                                                 
+2026-09-30T04:23:48.533Z {'loss': '0.4045', 'grad_norm': '10.43', 'learning_rate': '4.849e-05', 'entropy': '1.275', 'num_tokens': '1.229e+05', 'logits/chosen': '-2.17', 'logits/rejected': '-2.36', 'mean_token_accuracy': '0.6582', 'rewards/chosen': '0.04389', 'rewards/rejected': '-0.9468', 'rewards/accuracies': '0.875', 'rewards/margins': '0.9907', 'logps/chosen': '-195', 'logps/rejected': '-259.4', 'epoch': '0.48'}
+2026-09-30T04:23:48.534Z 
+2026-09-30T04:23:52.093Z  24%|██▍       | 24/100 [01:16<03:53,  3.07s/it]
+2026-09-30T04:23:52.095Z  25%|██▌       | 25/100 [01:20<04:01,  3.22s/it]
+2026-09-30T04:23:52.096Z                                                 
+2026-09-30T04:23:52.097Z {'loss': '0.5529', 'grad_norm': '13.86', 'learning_rate': '4.818e-05', 'entropy': '1.383', 'num_tokens': '1.29e+05', 'logits/chosen': '-2.206', 'logits/rejected': '-2.582', 'mean_token_accuracy': '0.5882', 'rewards/chosen': '-0.02821', 'rewards/rejected': '-0.688', 'rewards/accuracies': '0.625', 'rewards/margins': '0.6598', 'logps/chosen': '-478.6', 'logps/rejected': '-292.7', 'epoch': '0.5'}
+2026-09-30T04:23:52.099Z 
+2026-09-30T04:23:56.663Z  25%|██▌       | 25/100 [01:20<04:01,  3.22s/it]
+2026-09-30T04:23:56.664Z  26%|██▌       | 26/100 [01:24<04:28,  3.63s/it]
+2026-09-30T04:23:56.665Z                                                 
+2026-09-30T04:23:56.669Z {'loss': '0.2123', 'grad_norm': '7.65', 'learning_rate': '4.784e-05', 'entropy': '1.206', 'num_tokens': '1.351e+05', 'logits/chosen': '-2.293', 'logits/rejected': '-2.363', 'mean_token_accuracy': '0.6012', 'rewards/chosen': '0.1389', 'rewards/rejected': '-1.734', 'rewards/accuracies': '1', 'rewards/margins': '1.872', 'logps/chosen': '-444.3', 'logps/rejected': '-364.3', 'epoch': '0.52'}
+2026-09-30T04:23:56.671Z 
+2026-09-30T04:23:59.334Z  26%|██▌       | 26/100 [01:24<04:28,  3.63s/it]
+2026-09-30T04:23:59.337Z  27%|██▋       | 27/100 [01:27<04:03,  3.34s/it]
+2026-09-30T04:23:59.338Z                                                 
+2026-09-30T04:23:59.339Z {'loss': '0.4486', 'grad_norm': '9.91', 'learning_rate': '4.747e-05', 'entropy': '1.479', 'num_tokens': '1.393e+05', 'logits/chosen': '-1.525', 'logits/rejected': '-2.058', 'mean_token_accuracy': '0.558', 'rewards/chosen': '0.08952', 'rewards/rejected': '-0.6612', 'rewards/accuracies': '0.875', 'rewards/margins': '0.7507', 'logps/chosen': '-154.4', 'logps/rejected': '-146.9', 'epoch': '0.54'}
+2026-09-30T04:23:59.340Z 
+2026-09-30T04:24:02.732Z  27%|██▋       | 27/100 [01:27<04:03,  3.34s/it]
+2026-09-30T04:24:02.733Z  28%|██▊       | 28/100 [01:30<04:01,  3.36s/it]
+2026-09-30T04:24:02.734Z                                                 
+2026-09-30T04:24:02.734Z {'loss': '0.6634', 'grad_norm': '16.2', 'learning_rate': '4.707e-05', 'entropy': '1.464', 'num_tokens': '1.444e+05', 'logits/chosen': '-2.584', 'logits/rejected': '-2.636', 'mean_token_accuracy': '0.5948', 'rewards/chosen': '-0.2637', 'rewards/rejected': '-0.7657', 'rewards/accuracies': '0.75', 'rewards/margins': '0.502', 'logps/chosen': '-382.6', 'logps/rejected': '-216.5', 'epoch': '0.56'}
+2026-09-30T04:24:02.735Z 
+2026-09-30T04:24:05.782Z  28%|██▊       | 28/100 [01:30<04:01,  3.36s/it]
+2026-09-30T04:24:05.783Z  29%|██▉       | 29/100 [01:33<03:51,  3.26s/it]
+2026-09-30T04:24:05.785Z                                                 
+2026-09-30T04:24:05.786Z {'loss': '0.5412', 'grad_norm': '11.55', 'learning_rate': '4.665e-05', 'entropy': '1.272', 'num_tokens': '1.487e+05', 'logits/chosen': '-1.942', 'logits/rejected': '-2.153', 'mean_token_accuracy': '0.6479', 'rewards/chosen': '0.05509', 'rewards/rejected': '-0.4749', 'rewards/accuracies': '0.625', 'rewards/margins': '0.53', 'logps/chosen': '-245.6', 'logps/rejected': '-192.8', 'epoch': '0.58'}
+2026-09-30T04:24:05.787Z 
+2026-09-30T04:24:09.045Z  29%|██▉       | 29/100 [01:33<03:51,  3.26s/it]
+2026-09-30T04:24:09.046Z  30%|███       | 30/100 [01:37<03:48,  3.26s/it]
+2026-09-30T04:24:09.048Z                                                 
+2026-09-30T04:24:09.049Z {'loss': '0.9388', 'grad_norm': '21.11', 'learning_rate': '4.62e-05', 'entropy': '1.265', 'num_tokens': '1.534e+05', 'logits/chosen': '-2.202', 'logits/rejected': '-2.242', 'mean_token_accuracy': '0.6599', 'rewards/chosen': '-0.3206', 'rewards/rejected': '-0.343', 'rewards/accuracies': '0.5', 'rewards/margins': '0.0224', 'logps/chosen': '-332.9', 'logps/rejected': '-216.3', 'epoch': '0.6'}
+2026-09-30T04:24:09.050Z 
+2026-09-30T04:24:11.854Z  30%|███       | 30/100 [01:37<03:48,  3.26s/it]
+2026-09-30T04:24:11.857Z  31%|███       | 31/100 [01:39<03:35,  3.13s/it]
+2026-09-30T04:24:11.858Z                                                 
+2026-09-30T04:24:11.859Z {'loss': '0.4105', 'grad_norm': '9.872', 'learning_rate': '4.573e-05', 'entropy': '1.598', 'num_tokens': '1.581e+05', 'logits/chosen': '-2.127', 'logits/rejected': '-2.782', 'mean_token_accuracy': '0.5789', 'rewards/chosen': '0.384', 'rewards/rejected': '-0.5789', 'rewards/accuracies': '0.75', 'rewards/margins': '0.9629', 'logps/chosen': '-297.8', 'logps/rejected': '-279.6', 'epoch': '0.62'}
+2026-09-30T04:24:11.860Z 
+2026-09-30T04:24:15.095Z  31%|███       | 31/100 [01:39<03:35,  3.13s/it]
+2026-09-30T04:24:15.098Z  32%|███▏      | 32/100 [01:43<03:34,  3.16s/it]
+2026-09-30T04:24:15.099Z                                                 
+2026-09-30T04:24:15.099Z {'loss': '0.6469', 'grad_norm': '17.93', 'learning_rate': '4.523e-05', 'entropy': '1.145', 'num_tokens': '1.631e+05', 'logits/chosen': '-2.07', 'logits/rejected': '-2.355', 'mean_token_accuracy': '0.6354', 'rewards/chosen': '-0.1513', 'rewards/rejected': '-0.8559', 'rewards/accuracies': '0.75', 'rewards/margins': '0.7045', 'logps/chosen': '-284.8', 'logps/rejected': '-210.4', 'epoch': '0.64'}
+2026-09-30T04:24:15.100Z 
+2026-09-30T04:24:18.363Z  32%|███▏      | 32/100 [01:43<03:34,  3.16s/it]
+2026-09-30T04:24:18.364Z  33%|███▎      | 33/100 [01:46<03:33,  3.19s/it]
+2026-09-30T04:24:18.366Z                                                 
+2026-09-30T04:24:18.368Z {'loss': '1.01', 'grad_norm': '25.28', 'learning_rate': '4.47e-05', 'entropy': '1.298', 'num_tokens': '1.679e+05', 'logits/chosen': '-1.696', 'logits/rejected': '-2.299', 'mean_token_accuracy': '0.6803', 'rewards/chosen': '-0.5806', 'rewards/rejected': '-0.5563', 'rewards/accuracies': '0.625', 'rewards/margins': '-0.02433', 'logps/chosen': '-246.8', 'logps/rejected': '-223.6', 'epoch': '0.66'}
+2026-09-30T04:24:18.370Z 
+2026-09-30T04:24:21.256Z  33%|███▎      | 33/100 [01:46<03:33,  3.19s/it]
+2026-09-30T04:24:21.257Z  34%|███▍      | 34/100 [01:49<03:24,  3.10s/it]
+2026-09-30T04:24:21.257Z                                                 
+2026-09-30T04:24:21.259Z {'loss': '0.8766', 'grad_norm': '18.28', 'learning_rate': '4.415e-05', 'entropy': '1.236', 'num_tokens': '1.725e+05', 'logits/chosen': '-2.611', 'logits/rejected': '-2.653', 'mean_token_accuracy': '0.6746', 'rewards/chosen': '-0.2105', 'rewards/rejected': '-0.08861', 'rewards/accuracies': '0.375', 'rewards/margins': '-0.1219', 'logps/chosen': '-244.1', 'logps/rejected': '-220.7', 'epoch': '0.68'}
+2026-09-30T04:24:21.260Z 
+2026-09-30T04:24:24.604Z  34%|███▍      | 34/100 [01:49<03:24,  3.10s/it]
+2026-09-30T04:24:24.605Z  35%|███▌      | 35/100 [01:52<03:26,  3.18s/it]
+2026-09-30T04:24:24.605Z                                                 
+2026-09-30T04:24:24.606Z {'loss': '0.4266', 'grad_norm': '9.906', 'learning_rate': '4.358e-05', 'entropy': '1.118', 'num_tokens': '1.786e+05', 'logits/chosen': '-2.197', 'logits/rejected': '-2.138', 'mean_token_accuracy': '0.6632', 'rewards/chosen': '0.1997', 'rewards/rejected': '-1.073', 'rewards/accuracies': '0.75', 'rewards/margins': '1.273', 'logps/chosen': '-323.5', 'logps/rejected': '-258.8', 'epoch': '0.7'}
+2026-09-30T04:24:24.607Z 
+2026-09-30T04:24:27.842Z  35%|███▌      | 35/100 [01:52<03:26,  3.18s/it]
+2026-09-30T04:24:27.844Z  36%|███▌      | 36/100 [01:55<03:24,  3.20s/it]
+2026-09-30T04:24:27.847Z                                                 
+2026-09-30T04:24:27.848Z {'loss': '0.256', 'grad_norm': '8.724', 'learning_rate': '4.298e-05', 'entropy': '1.307', 'num_tokens': '1.841e+05', 'logits/chosen': '-2.324', 'logits/rejected': '-2.522', 'mean_token_accuracy': '0.628', 'rewards/chosen': '0.4073', 'rewards/rejected': '-1.263', 'rewards/accuracies': '1', 'rewards/margins': '1.67', 'logps/chosen': '-245.8', 'logps/rejected': '-382.4', 'epoch': '0.72'}
+2026-09-30T04:24:27.848Z 
+2026-09-30T04:24:31.348Z  36%|███▌      | 36/100 [01:55<03:24,  3.20s/it]
+2026-09-30T04:24:31.350Z  37%|███▋      | 37/100 [01:59<03:27,  3.29s/it]
+2026-09-30T04:24:31.350Z                                                 
+2026-09-30T04:24:31.353Z {'loss': '0.4325', 'grad_norm': '13.8', 'learning_rate': '4.237e-05', 'entropy': '1.235', 'num_tokens': '1.895e+05', 'logits/chosen': '-1.886', 'logits/rejected': '-2.172', 'mean_token_accuracy': '0.65', 'rewards/chosen': '0.4836', 'rewards/rejected': '-0.5829', 'rewards/accuracies': '0.75', 'rewards/margins': '1.066', 'logps/chosen': '-274.3', 'logps/rejected': '-328.1', 'epoch': '0.74'}
+2026-09-30T04:24:31.354Z 
+2026-09-30T04:24:34.282Z  37%|███▋      | 37/100 [01:59<03:27,  3.29s/it]
+2026-09-30T04:24:34.283Z  38%|███▊      | 38/100 [02:02<03:17,  3.18s/it]
+2026-09-30T04:24:34.284Z                                                 
+2026-09-30T04:24:34.284Z {'loss': '0.279', 'grad_norm': '6.235', 'learning_rate': '4.173e-05', 'entropy': '1.47', 'num_tokens': '1.939e+05', 'logits/chosen': '-2.194', 'logits/rejected': '-2.252', 'mean_token_accuracy': '0.6247', 'rewards/chosen': '0.534', 'rewards/rejected': '-0.9566', 'rewards/accuracies': '0.875', 'rewards/margins': '1.491', 'logps/chosen': '-198.4', 'logps/rejected': '-219.1', 'epoch': '0.76'}
+2026-09-30T04:24:34.285Z 
+2026-09-30T04:24:37.886Z  38%|███▊      | 38/100 [02:02<03:17,  3.18s/it]
+2026-09-30T04:24:37.887Z  39%|███▉      | 39/100 [02:05<03:21,  3.31s/it]
+2026-09-30T04:24:37.889Z                                                 
+2026-09-30T04:24:37.890Z {'loss': '0.3682', 'grad_norm': '10.93', 'learning_rate': '4.107e-05', 'entropy': '1.219', 'num_tokens': '2.002e+05', 'logits/chosen': '-2.312', 'logits/rejected': '-2.149', 'mean_token_accuracy': '0.6422', 'rewards/chosen': '0.5142', 'rewards/rejected': '-0.49', 'rewards/accuracies': '0.875', 'rewards/margins': '1.004', 'logps/chosen': '-265.3', 'logps/rejected': '-296.8', 'epoch': '0.78'}
+2026-09-30T04:24:37.891Z 
+2026-09-30T04:24:40.887Z  39%|███▉      | 39/100 [02:05<03:21,  3.31s/it]
+2026-09-30T04:24:40.890Z  40%|████      | 40/100 [02:08<03:12,  3.22s/it]
+2026-09-30T04:24:40.892Z                                                 
+2026-09-30T04:24:40.893Z {'loss': '0.342', 'grad_norm': '7.024', 'learning_rate': '4.039e-05', 'entropy': '1.413', 'num_tokens': '2.04e+05', 'logits/chosen': '-2.633', 'logits/rejected': '-2.719', 'mean_token_accuracy': '0.6189', 'rewards/chosen': '0.4319', 'rewards/rejected': '-0.8688', 'rewards/accuracies': '0.75', 'rewards/margins': '1.301', 'logps/chosen': '-261.8', 'logps/rejected': '-268.1', 'epoch': '0.8'}
+2026-09-30T04:24:40.893Z 
+2026-09-30T04:24:44.162Z  40%|████      | 40/100 [02:08<03:12,  3.22s/it]
+2026-09-30T04:24:44.163Z  41%|████      | 41/100 [02:12<03:10,  3.23s/it]
+2026-09-30T04:24:44.166Z                                                 
+2026-09-30T04:24:44.166Z {'loss': '0.57', 'grad_norm': '13.46', 'learning_rate': '3.969e-05', 'entropy': '1.341', 'num_tokens': '2.093e+05', 'logits/chosen': '-1.666', 'logits/rejected': '-1.738', 'mean_token_accuracy': '0.6147', 'rewards/chosen': '0.09014', 'rewards/rejected': '-0.6805', 'rewards/accuracies': '0.625', 'rewards/margins': '0.7706', 'logps/chosen': '-204.9', 'logps/rejected': '-299.1', 'epoch': '0.82'}
+2026-09-30T04:24:44.167Z 
+2026-09-30T04:24:46.463Z  41%|████      | 41/100 [02:12<03:10,  3.23s/it]
+2026-09-30T04:24:46.464Z  42%|████▏     | 42/100 [02:14<02:51,  2.95s/it]
+2026-09-30T04:24:46.466Z                                                 
+2026-09-30T04:24:46.467Z {'loss': '0.5609', 'grad_norm': '12.25', 'learning_rate': '3.898e-05', 'entropy': '1.242', 'num_tokens': '2.128e+05', 'logits/chosen': '-2.373', 'logits/rejected': '-2.386', 'mean_token_accuracy': '0.6788', 'rewards/chosen': '0.1058', 'rewards/rejected': '-0.6552', 'rewards/accuracies': '0.75', 'rewards/margins': '0.761', 'logps/chosen': '-186.7', 'logps/rejected': '-147.6', 'epoch': '0.84'}
+2026-09-30T04:24:46.468Z 
+2026-09-30T04:24:50.065Z  42%|████▏     | 42/100 [02:14<02:51,  2.95s/it]
+2026-09-30T04:24:50.066Z  43%|████▎     | 43/100 [02:18<02:59,  3.15s/it]
+2026-09-30T04:24:50.068Z                                                 
+2026-09-30T04:24:50.069Z {'loss': '0.5901', 'grad_norm': '14.07', 'learning_rate': '3.825e-05', 'entropy': '1.431', 'num_tokens': '2.188e+05', 'logits/chosen': '-2.036', 'logits/rejected': '-1.816', 'mean_token_accuracy': '0.6683', 'rewards/chosen': '0.09867', 'rewards/rejected': '-0.4111', 'rewards/accuracies': '0.5', 'rewards/margins': '0.5098', 'logps/chosen': '-287', 'logps/rejected': '-252.1', 'epoch': '0.86'}
+2026-09-30T04:24:50.070Z 
+2026-09-30T04:24:53.357Z  43%|████▎     | 43/100 [02:18<02:59,  3.15s/it]
+2026-09-30T04:24:53.359Z  44%|████▍     | 44/100 [02:21<02:58,  3.19s/it]
+2026-09-30T04:24:53.360Z                                                 
+2026-09-30T04:24:53.361Z {'loss': '0.6827', 'grad_norm': '17.29', 'learning_rate': '3.75e-05', 'entropy': '1.188', 'num_tokens': '2.237e+05', 'logits/chosen': '-2.487', 'logits/rejected': '-2.237', 'mean_token_accuracy': '0.654', 'rewards/chosen': '0.06213', 'rewards/rejected': '-0.8412', 'rewards/accuracies': '0.625', 'rewards/margins': '0.9033', 'logps/chosen': '-235.8', 'logps/rejected': '-318.9', 'epoch': '0.88'}
+2026-09-30T04:24:53.362Z 
+2026-09-30T04:24:56.289Z  44%|████▍     | 44/100 [02:21<02:58,  3.19s/it]
+2026-09-30T04:24:56.290Z  45%|████▌     | 45/100 [02:24<02:51,  3.11s/it]
+2026-09-30T04:24:56.292Z                                                 
+2026-09-30T04:24:56.294Z {'loss': '0.3363', 'grad_norm': '10.39', 'learning_rate': '3.674e-05', 'entropy': '1.338', 'num_tokens': '2.283e+05', 'logits/chosen': '-2.326', 'logits/rejected': '-2.379', 'mean_token_accuracy': '0.6563', 'rewards/chosen': '0.1355', 'rewards/rejected': '-1.679', 'rewards/accuracies': '0.75', 'rewards/margins': '1.814', 'logps/chosen': '-139.9', 'logps/rejected': '-330.9', 'epoch': '0.9'}
+2026-09-30T04:24:56.294Z 
+2026-09-30T04:24:59.873Z  45%|████▌     | 45/100 [02:24<02:51,  3.11s/it]
+2026-09-30T04:24:59.874Z  46%|████▌     | 46/100 [02:27<02:55,  3.25s/it]
+2026-09-30T04:24:59.874Z                                                 
+2026-09-30T04:24:59.875Z {'loss': '0.9588', 'grad_norm': '21.2', 'learning_rate': '3.596e-05', 'entropy': '1.435', 'num_tokens': '2.348e+05', 'logits/chosen': '-2.213', 'logits/rejected': '-2.065', 'mean_token_accuracy': '0.6312', 'rewards/chosen': '-0.2967', 'rewards/rejected': '-0.429', 'rewards/accuracies': '0.5', 'rewards/margins': '0.1323', 'logps/chosen': '-357.7', 'logps/rejected': '-347.4', 'epoch': '0.92'}
+2026-09-30T04:24:59.875Z 
+2026-09-30T04:25:02.744Z  46%|████▌     | 46/100 [02:27<02:55,  3.25s/it]
+2026-09-30T04:25:02.745Z  47%|████▋     | 47/100 [02:30<02:46,  3.14s/it]
+2026-09-30T04:25:02.745Z                                                 
+2026-09-30T04:25:02.746Z {'loss': '0.4621', 'grad_norm': '14.15', 'learning_rate': '3.517e-05', 'entropy': '1.205', 'num_tokens': '2.394e+05', 'logits/chosen': '-2.253', 'logits/rejected': '-2.391', 'mean_token_accuracy': '0.6243', 'rewards/chosen': '0.1797', 'rewards/rejected': '-1.811', 'rewards/accuracies': '0.75', 'rewards/margins': '1.991', 'logps/chosen': '-172.8', 'logps/rejected': '-275.1', 'epoch': '0.94'}
+2026-09-30T04:25:02.746Z 
+2026-09-30T04:25:05.901Z  47%|████▋     | 47/100 [02:30<02:46,  3.14s/it]
+2026-09-30T04:25:05.903Z  48%|████▊     | 48/100 [02:33<02:43,  3.14s/it]
+2026-09-30T04:25:05.905Z                                                 
+2026-09-30T04:25:05.906Z {'loss': '1.005', 'grad_norm': '30', 'learning_rate': '3.437e-05', 'entropy': '1.346', 'num_tokens': '2.452e+05', 'logits/chosen': '-2.119', 'logits/rejected': '-1.769', 'mean_token_accuracy': '0.6417', 'rewards/chosen': '-0.5039', 'rewards/rejected': '-0.8275', 'rewards/accuracies': '0.375', 'rewards/margins': '0.3236', 'logps/chosen': '-307.6', 'logps/rejected': '-275', 'epoch': '0.96'}
+2026-09-30T04:25:05.906Z 
+2026-09-30T04:25:09.585Z  48%|████▊     | 48/100 [02:33<02:43,  3.14s/it]
+2026-09-30T04:25:09.587Z  49%|████▉     | 49/100 [02:37<02:48,  3.31s/it]
+2026-09-30T04:25:09.589Z                                                 
+2026-09-30T04:25:09.590Z {'loss': '0.7139', 'grad_norm': '17.23', 'learning_rate': '3.355e-05', 'entropy': '1.582', 'num_tokens': '2.513e+05', 'logits/chosen': '-2.105', 'logits/rejected': '-2.374', 'mean_token_accuracy': '0.603', 'rewards/chosen': '0.1395', 'rewards/rejected': '-1.059', 'rewards/accuracies': '0.625', 'rewards/margins': '1.199', 'logps/chosen': '-342', 'logps/rejected': '-440.5', 'epoch': '0.98'}
+2026-09-30T04:25:09.592Z 
+2026-09-30T04:25:12.436Z  49%|████▉     | 49/100 [02:37<02:48,  3.31s/it]
+2026-09-30T04:25:12.437Z  50%|█████     | 50/100 [02:40<02:38,  3.17s/it]
+2026-09-30T04:25:12.439Z                                                 
+2026-09-30T04:25:12.440Z {'loss': '0.6643', 'grad_norm': '16.43', 'learning_rate': '3.273e-05', 'entropy': '1.42', 'num_tokens': '2.56e+05', 'logits/chosen': '-1.898', 'logits/rejected': '-2.236', 'mean_token_accuracy': '0.627', 'rewards/chosen': '0.1535', 'rewards/rejected': '-0.3465', 'rewards/accuracies': '0.625', 'rewards/margins': '0.5', 'logps/chosen': '-269', 'logps/rejected': '-253.1', 'epoch': '1'}
+2026-09-30T04:25:12.441Z 
+2026-09-30T04:25:16.666Z  50%|█████     | 50/100 [02:40<02:38,  3.17s/it]
+2026-09-30T04:25:16.667Z  51%|█████     | 51/100 [02:44<02:50,  3.49s/it]
+2026-09-30T04:25:16.670Z                                                 
+2026-09-30T04:25:16.671Z {'loss': '0.2778', 'grad_norm': '6.339', 'learning_rate': '3.189e-05', 'entropy': '1.052', 'num_tokens': '2.605e+05', 'logits/chosen': '-2.268', 'logits/rejected': '-2.262', 'mean_token_accuracy': '0.6657', 'rewards/chosen': '0.4354', 'rewards/rejected': '-1.453', 'rewards/accuracies': '1', 'rewards/margins': '1.888', 'logps/chosen': '-202.2', 'logps/rejected': '-225.9', 'epoch': '1.02'}
+2026-09-30T04:25:16.672Z 
+2026-09-30T04:25:19.922Z  51%|█████     | 51/100 [02:44<02:50,  3.49s/it]
+2026-09-30T04:25:19.924Z  52%|█████▏    | 52/100 [02:48<02:44,  3.42s/it]
+2026-09-30T04:25:19.925Z                                                 
+2026-09-30T04:25:19.926Z {'loss': '0.276', 'grad_norm': '8.415', 'learning_rate': '3.105e-05', 'entropy': '0.9496', 'num_tokens': '2.654e+05', 'logits/chosen': '-2.149', 'logits/rejected': '-2.313', 'mean_token_accuracy': '0.7605', 'rewards/chosen': '0.5435', 'rewards/rejected': '-1.143', 'rewards/accuracies': '1', 'rewards/margins': '1.687', 'logps/chosen': '-213.8', 'logps/rejected': '-209.3', 'epoch': '1.04'}
+2026-09-30T04:25:19.926Z 
+2026-09-30T04:25:23.194Z  52%|█████▏    | 52/100 [02:48<02:44,  3.42s/it]
+2026-09-30T04:25:23.195Z  53%|█████▎    | 53/100 [02:51<02:38,  3.37s/it]
+2026-09-30T04:25:23.196Z                                                 
+2026-09-30T04:25:23.198Z {'loss': '0.2016', 'grad_norm': '5.573', 'learning_rate': '3.02e-05', 'entropy': '1.275', 'num_tokens': '2.703e+05', 'logits/chosen': '-2.089', 'logits/rejected': '-2.377', 'mean_token_accuracy': '0.6265', 'rewards/chosen': '0.6636', 'rewards/rejected': '-1.573', 'rewards/accuracies': '1', 'rewards/margins': '2.236', 'logps/chosen': '-222.8', 'logps/rejected': '-306.8', 'epoch': '1.06'}
+2026-09-30T04:25:23.200Z 
+2026-09-30T04:25:26.285Z  53%|█████▎    | 53/100 [02:51<02:38,  3.37s/it]
+2026-09-30T04:25:26.286Z  54%|█████▍    | 54/100 [02:54<02:31,  3.29s/it]
+2026-09-30T04:25:26.287Z                                                 
+2026-09-30T04:25:26.288Z {'loss': '0.3986', 'grad_norm': '15.46', 'learning_rate': '2.934e-05', 'entropy': '1.094', 'num_tokens': '2.756e+05', 'logits/chosen': '-2.218', 'logits/rejected': '-2.352', 'mean_token_accuracy': '0.6858', 'rewards/chosen': '0.2251', 'rewards/rejected': '-2.003', 'rewards/accuracies': '0.875', 'rewards/margins': '2.229', 'logps/chosen': '-270.9', 'logps/rejected': '-353.6', 'epoch': '1.08'}
+2026-09-30T04:25:26.290Z 
+2026-09-30T04:25:29.291Z  54%|█████▍    | 54/100 [02:54<02:31,  3.29s/it]
+2026-09-30T04:25:29.292Z  55%|█████▌    | 55/100 [02:57<02:24,  3.20s/it]
+2026-09-30T04:25:29.294Z                                                 
+2026-09-30T04:25:29.296Z {'loss': '0.1781', 'grad_norm': '5.542', 'learning_rate': '2.848e-05', 'entropy': '1.338', 'num_tokens': '2.806e+05', 'logits/chosen': '-2.319', 'logits/rejected': '-2.442', 'mean_token_accuracy': '0.6528', 'rewards/chosen': '0.7622', 'rewards/rejected': '-1.322', 'rewards/accuracies': '1', 'rewards/margins': '2.084', 'logps/chosen': '-263.8', 'logps/rejected': '-304.3', 'epoch': '1.1'}
+2026-09-30T04:25:29.298Z 
+2026-09-30T04:25:32.738Z  55%|█████▌    | 55/100 [02:57<02:24,  3.20s/it]
+2026-09-30T04:25:32.739Z  56%|█████▌    | 56/100 [03:00<02:24,  3.28s/it]
+2026-09-30T04:25:32.740Z                                                 
+2026-09-30T04:25:32.741Z {'loss': '0.386', 'grad_norm': '12.1', 'learning_rate': '2.761e-05', 'entropy': '1.088', 'num_tokens': '2.855e+05', 'logits/chosen': '-2.054', 'logits/rejected': '-2.293', 'mean_token_accuracy': '0.6514', 'rewards/chosen': '0.3891', 'rewards/rejected': '-1.158', 'rewards/accuracies': '0.875', 'rewards/margins': '1.547', 'logps/chosen': '-284.5', 'logps/rejected': '-219.5', 'epoch': '1.12'}
+2026-09-30T04:25:32.743Z 
+2026-09-30T04:25:35.881Z  56%|█████▌    | 56/100 [03:00<02:24,  3.28s/it]
+2026-09-30T04:25:35.882Z  57%|█████▋    | 57/100 [03:03<02:19,  3.24s/it]
+2026-09-30T04:25:35.883Z                                                 
+2026-09-30T04:25:35.884Z {'loss': '0.2777', 'grad_norm': '9.22', 'learning_rate': '2.674e-05', 'entropy': '1.307', 'num_tokens': '2.902e+05', 'logits/chosen': '-1.741', 'logits/rejected': '-1.951', 'mean_token_accuracy': '0.6518', 'rewards/chosen': '0.6647', 'rewards/rejected': '-1.447', 'rewards/accuracies': '0.875', 'rewards/margins': '2.112', 'logps/chosen': '-281', 'logps/rejected': '-261.2', 'epoch': '1.14'}
+2026-09-30T04:25:35.886Z 
+2026-09-30T04:25:38.751Z  57%|█████▋    | 57/100 [03:03<02:19,  3.24s/it]
+2026-09-30T04:25:38.752Z  58%|█████▊    | 58/100 [03:06<02:11,  3.13s/it]
+2026-09-30T04:25:38.752Z                                                 
+2026-09-30T04:25:38.752Z {'loss': '0.319', 'grad_norm': '10.13', 'learning_rate': '2.587e-05', 'entropy': '1.499', 'num_tokens': '2.947e+05', 'logits/chosen': '-2.824', 'logits/rejected': '-2.747', 'mean_token_accuracy': '0.678', 'rewards/chosen': '0.2694', 'rewards/rejected': '-1.865', 'rewards/accuracies': '0.75', 'rewards/margins': '2.134', 'logps/chosen': '-225.3', 'logps/rejected': '-248.7', 'epoch': '1.16'}
+2026-09-30T04:25:38.753Z 
+2026-09-30T04:25:41.924Z  58%|█████▊    | 58/100 [03:06<02:11,  3.13s/it]
+2026-09-30T04:25:41.925Z  59%|█████▉    | 59/100 [03:10<02:08,  3.14s/it]
+2026-09-30T04:25:41.927Z                                                 
+2026-09-30T04:25:41.928Z {'loss': '0.1921', 'grad_norm': '6.865', 'learning_rate': '2.5e-05', 'entropy': '1.373', 'num_tokens': '3e+05', 'logits/chosen': '-2.048', 'logits/rejected': '-2.509', 'mean_token_accuracy': '0.6052', 'rewards/chosen': '0.9035', 'rewards/rejected': '-1.491', 'rewards/accuracies': '1', 'rewards/margins': '2.395', 'logps/chosen': '-376.1', 'logps/rejected': '-310.5', 'epoch': '1.18'}
+2026-09-30T04:25:41.929Z 
+2026-09-30T04:25:44.932Z  59%|█████▉    | 59/100 [03:10<02:08,  3.14s/it]
+2026-09-30T04:25:44.936Z  60%|██████    | 60/100 [03:13<02:04,  3.10s/it]
+2026-09-30T04:25:44.936Z                                                 
+2026-09-30T04:25:44.938Z {'loss': '0.2924', 'grad_norm': '7.536', 'learning_rate': '2.413e-05', 'entropy': '1.067', 'num_tokens': '3.041e+05', 'logits/chosen': '-2.515', 'logits/rejected': '-2.628', 'mean_token_accuracy': '0.6671', 'rewards/chosen': '0.5699', 'rewards/rejected': '-0.7156', 'rewards/accuracies': '1', 'rewards/margins': '1.286', 'logps/chosen': '-235.6', 'logps/rejected': '-142.3', 'epoch': '1.2'}
+2026-09-30T04:25:44.940Z 
+2026-09-30T04:25:48.154Z  60%|██████    | 60/100 [03:13<02:04,  3.10s/it]
+2026-09-30T04:25:48.155Z  61%|██████    | 61/100 [03:16<02:02,  3.14s/it]
+2026-09-30T04:25:48.155Z                                                 
+2026-09-30T04:25:48.156Z {'loss': '0.3028', 'grad_norm': '9.563', 'learning_rate': '2.326e-05', 'entropy': '1.451', 'num_tokens': '3.088e+05', 'logits/chosen': '-1.825', 'logits/rejected': '-1.883', 'mean_token_accuracy': '0.5381', 'rewards/chosen': '0.4129', 'rewards/rejected': '-1.142', 'rewards/accuracies': '0.875', 'rewards/margins': '1.555', 'logps/chosen': '-198.8', 'logps/rejected': '-268.3', 'epoch': '1.22'}
+2026-09-30T04:25:48.156Z 
+2026-09-30T04:25:51.269Z  61%|██████    | 61/100 [03:16<02:02,  3.14s/it]
+2026-09-30T04:25:51.270Z  62%|██████▏   | 62/100 [03:19<01:58,  3.13s/it]
+2026-09-30T04:25:51.271Z                                                 
+2026-09-30T04:25:51.271Z {'loss': '0.2762', 'grad_norm': '7.615', 'learning_rate': '2.239e-05', 'entropy': '1.603', 'num_tokens': '3.136e+05', 'logits/chosen': '-2.562', 'logits/rejected': '-2.327', 'mean_token_accuracy': '0.5744', 'rewards/chosen': '0.3568', 'rewards/rejected': '-1.082', 'rewards/accuracies': '0.875', 'rewards/margins': '1.439', 'logps/chosen': '-142.2', 'logps/rejected': '-313.6', 'epoch': '1.24'}
+2026-09-30T04:25:51.272Z 
+2026-09-30T04:25:54.273Z  62%|██████▏   | 62/100 [03:19<01:58,  3.13s/it]
+2026-09-30T04:25:54.274Z  63%|██████▎   | 63/100 [03:22<01:54,  3.09s/it]
+2026-09-30T04:25:54.275Z                                                 
+2026-09-30T04:25:54.276Z {'loss': '0.4398', 'grad_norm': '11.46', 'learning_rate': '2.152e-05', 'entropy': '1.151', 'num_tokens': '3.187e+05', 'logits/chosen': '-1.787', 'logits/rejected': '-2.09', 'mean_token_accuracy': '0.6806', 'rewards/chosen': '0.444', 'rewards/rejected': '-0.6619', 'rewards/accuracies': '0.75', 'rewards/margins': '1.106', 'logps/chosen': '-212.6', 'logps/rejected': '-192.1', 'epoch': '1.26'}
+2026-09-30T04:25:54.276Z 
+2026-09-30T04:25:57.339Z  63%|██████▎   | 63/100 [03:22<01:54,  3.09s/it]
+2026-09-30T04:25:57.341Z  64%|██████▍   | 64/100 [03:25<01:51,  3.08s/it]
+2026-09-30T04:25:57.343Z                                                 
+2026-09-30T04:25:57.343Z {'loss': '0.2522', 'grad_norm': '6.95', 'learning_rate': '2.066e-05', 'entropy': '1.058', 'num_tokens': '3.238e+05', 'logits/chosen': '-2.327', 'logits/rejected': '-2.839', 'mean_token_accuracy': '0.679', 'rewards/chosen': '0.7775', 'rewards/rejected': '-0.9204', 'rewards/accuracies': '1', 'rewards/margins': '1.698', 'logps/chosen': '-281.6', 'logps/rejected': '-200.7', 'epoch': '1.28'}
+2026-09-30T04:25:57.344Z 
+2026-09-30T04:26:00.712Z  64%|██████▍   | 64/100 [03:25<01:51,  3.08s/it]
+2026-09-30T04:26:00.713Z  65%|██████▌   | 65/100 [03:28<01:50,  3.17s/it]
+2026-09-30T04:26:00.715Z                                                 
+2026-09-30T04:26:00.716Z {'loss': '0.2637', 'grad_norm': '9.809', 'learning_rate': '1.98e-05', 'entropy': '1.158', 'num_tokens': '3.297e+05', 'logits/chosen': '-1.492', 'logits/rejected': '-1.688', 'mean_token_accuracy': '0.6588', 'rewards/chosen': '0.529', 'rewards/rejected': '-1.137', 'rewards/accuracies': '0.875', 'rewards/margins': '1.666', 'logps/chosen': '-280.9', 'logps/rejected': '-256.9', 'epoch': '1.3'}
+2026-09-30T04:26:00.717Z 
+2026-09-30T04:26:03.793Z  65%|██████▌   | 65/100 [03:28<01:50,  3.17s/it]
+2026-09-30T04:26:03.794Z  66%|██████▌   | 66/100 [03:31<01:46,  3.14s/it]
+2026-09-30T04:26:03.794Z                                                 
+2026-09-30T04:26:03.794Z {'loss': '0.1561', 'grad_norm': '6.194', 'learning_rate': '1.895e-05', 'entropy': '1.532', 'num_tokens': '3.346e+05', 'logits/chosen': '-2.323', 'logits/rejected': '-2.641', 'mean_token_accuracy': '0.6018', 'rewards/chosen': '0.9935', 'rewards/rejected': '-1.288', 'rewards/accuracies': '1', 'rewards/margins': '2.281', 'logps/chosen': '-348', 'logps/rejected': '-302.3', 'epoch': '1.32'}
+2026-09-30T04:26:03.795Z 
+2026-09-30T04:26:06.614Z  66%|██████▌   | 66/100 [03:31<01:46,  3.14s/it]
+2026-09-30T04:26:06.616Z  67%|██████▋   | 67/100 [03:34<01:40,  3.05s/it]
+2026-09-30T04:26:06.617Z                                                 
+2026-09-30T04:26:06.618Z {'loss': '0.2088', 'grad_norm': '6.07', 'learning_rate': '1.811e-05', 'entropy': '1.508', 'num_tokens': '3.39e+05', 'logits/chosen': '-2.618', 'logits/rejected': '-2.728', 'mean_token_accuracy': '0.6229', 'rewards/chosen': '0.4701', 'rewards/rejected': '-1.399', 'rewards/accuracies': '1', 'rewards/margins': '1.869', 'logps/chosen': '-202', 'logps/rejected': '-244.6', 'epoch': '1.34'}
+2026-09-30T04:26:06.619Z 
+2026-09-30T04:26:09.667Z  67%|██████▋   | 67/100 [03:34<01:40,  3.05s/it]
+2026-09-30T04:26:09.669Z  68%|██████▊   | 68/100 [03:37<01:37,  3.05s/it]
+2026-09-30T04:26:09.671Z                                                 
+2026-09-30T04:26:09.672Z {'loss': '0.3698', 'grad_norm': '10.25', 'learning_rate': '1.727e-05', 'entropy': '1.075', 'num_tokens': '3.439e+05', 'logits/chosen': '-2.032', 'logits/rejected': '-2.102', 'mean_token_accuracy': '0.7149', 'rewards/chosen': '0.5233', 'rewards/rejected': '-0.8714', 'rewards/accuracies': '0.875', 'rewards/margins': '1.395', 'logps/chosen': '-166.3', 'logps/rejected': '-190.4', 'epoch': '1.36'}
+2026-09-30T04:26:09.672Z 
+2026-09-30T04:26:13.112Z  68%|██████▊   | 68/100 [03:37<01:37,  3.05s/it]
+2026-09-30T04:26:13.116Z  69%|██████▉   | 69/100 [03:41<01:38,  3.17s/it]
+2026-09-30T04:26:13.116Z                                                 
+2026-09-30T04:26:13.117Z {'loss': '0.202', 'grad_norm': '11.7', 'learning_rate': '1.645e-05', 'entropy': '1.389', 'num_tokens': '3.488e+05', 'logits/chosen': '-2.395', 'logits/rejected': '-2.221', 'mean_token_accuracy': '0.535', 'rewards/chosen': '0.8029', 'rewards/rejected': '-1.316', 'rewards/accuracies': '1', 'rewards/margins': '2.119', 'logps/chosen': '-264.8', 'logps/rejected': '-366.8', 'epoch': '1.38'}
+2026-09-30T04:26:13.119Z 
+2026-09-30T04:26:16.784Z  69%|██████▉   | 69/100 [03:41<01:38,  3.17s/it]
+2026-09-30T04:26:16.785Z  70%|███████   | 70/100 [03:44<01:39,  3.32s/it]
+2026-09-30T04:26:16.786Z                                                 
+2026-09-30T04:26:16.788Z {'loss': '0.4181', 'grad_norm': '14.43', 'learning_rate': '1.563e-05', 'entropy': '1.4', 'num_tokens': '3.545e+05', 'logits/chosen': '-1.887', 'logits/rejected': '-1.935', 'mean_token_accuracy': '0.6418', 'rewards/chosen': '0.3377', 'rewards/rejected': '-0.9037', 'rewards/accuracies': '0.875', 'rewards/margins': '1.241', 'logps/chosen': '-309.7', 'logps/rejected': '-316.9', 'epoch': '1.4'}
+2026-09-30T04:26:16.789Z 
+2026-09-30T04:26:20.384Z  70%|███████   | 70/100 [03:44<01:39,  3.32s/it]
+2026-09-30T04:26:20.386Z  71%|███████   | 71/100 [03:48<01:38,  3.40s/it]
+2026-09-30T04:26:20.387Z                                                 
+2026-09-30T04:26:20.388Z {'loss': '0.2616', 'grad_norm': '9.628', 'learning_rate': '1.483e-05', 'entropy': '1.581', 'num_tokens': '3.607e+05', 'logits/chosen': '-1.701', 'logits/rejected': '-2.326', 'mean_token_accuracy': '0.6001', 'rewards/chosen': '0.9568', 'rewards/rejected': '-0.7628', 'rewards/accuracies': '0.875', 'rewards/margins': '1.72', 'logps/chosen': '-517.1', 'logps/rejected': '-366.8', 'epoch': '1.42'}
+2026-09-30T04:26:20.389Z 
+2026-09-30T04:26:23.495Z  71%|███████   | 71/100 [03:48<01:38,  3.40s/it]
+2026-09-30T04:26:23.497Z  72%|███████▏  | 72/100 [03:51<01:32,  3.32s/it]
+2026-09-30T04:26:23.498Z                                                 
+2026-09-30T04:26:23.500Z {'loss': '0.4267', 'grad_norm': '11.53', 'learning_rate': '1.404e-05', 'entropy': '1.3', 'num_tokens': '3.65e+05', 'logits/chosen': '-2.046', 'logits/rejected': '-1.945', 'mean_token_accuracy': '0.7033', 'rewards/chosen': '0.4321', 'rewards/rejected': '-0.4933', 'rewards/accuracies': '0.875', 'rewards/margins': '0.9255', 'logps/chosen': '-144', 'logps/rejected': '-211.3', 'epoch': '1.44'}
+2026-09-30T04:26:23.502Z 
+2026-09-30T04:26:26.955Z  72%|███████▏  | 72/100 [03:51<01:32,  3.32s/it]
+2026-09-30T04:26:26.956Z  73%|███████▎  | 73/100 [03:55<01:30,  3.36s/it]
+2026-09-30T04:26:26.956Z                                                 
+2026-09-30T04:26:26.957Z {'loss': '0.4158', 'grad_norm': '13.49', 'learning_rate': '1.326e-05', 'entropy': '1.442', 'num_tokens': '3.702e+05', 'logits/chosen': '-2.273', 'logits/rejected': '-2.158', 'mean_token_accuracy': '0.5865', 'rewards/chosen': '0.7995', 'rewards/rejected': '-0.3543', 'rewards/accuracies': '0.75', 'rewards/margins': '1.154', 'logps/chosen': '-374.4', 'logps/rejected': '-342.8', 'epoch': '1.46'}
+2026-09-30T04:26:26.957Z 
+2026-09-30T04:26:30.587Z  73%|███████▎  | 73/100 [03:55<01:30,  3.36s/it]
+2026-09-30T04:26:30.588Z  74%|███████▍  | 74/100 [03:58<01:29,  3.44s/it]
+2026-09-30T04:26:30.589Z                                                 
+2026-09-30T04:26:30.590Z {'loss': '0.2789', 'grad_norm': '10.73', 'learning_rate': '1.25e-05', 'entropy': '1.335', 'num_tokens': '3.768e+05', 'logits/chosen': '-2.135', 'logits/rejected': '-2.25', 'mean_token_accuracy': '0.6438', 'rewards/chosen': '1.27', 'rewards/rejected': '-0.3931', 'rewards/accuracies': '0.875', 'rewards/margins': '1.663', 'logps/chosen': '-452', 'logps/rejected': '-407.3', 'epoch': '1.48'}
+2026-09-30T04:26:30.590Z 
+2026-09-30T04:26:33.709Z  74%|███████▍  | 74/100 [03:58<01:29,  3.44s/it]
+2026-09-30T04:26:33.712Z  75%|███████▌  | 75/100 [04:01<01:23,  3.35s/it]
+2026-09-30T04:26:33.712Z                                                 
+2026-09-30T04:26:33.713Z {'loss': '0.1953', 'grad_norm': '5.293', 'learning_rate': '1.175e-05', 'entropy': '1.527', 'num_tokens': '3.825e+05', 'logits/chosen': '-1.761', 'logits/rejected': '-1.904', 'mean_token_accuracy': '0.5963', 'rewards/chosen': '1.242', 'rewards/rejected': '-1.346', 'rewards/accuracies': '1', 'rewards/margins': '2.589', 'logps/chosen': '-354', 'logps/rejected': '-313.6', 'epoch': '1.5'}
+2026-09-30T04:26:33.714Z 
+2026-09-30T04:26:38.446Z  75%|███████▌  | 75/100 [04:01<01:23,  3.35s/it]
+2026-09-30T04:26:38.446Z  76%|███████▌  | 76/100 [04:06<01:30,  3.76s/it]
+2026-09-30T04:26:38.448Z                                                 
+2026-09-30T04:26:38.450Z {'loss': '0.3509', 'grad_norm': '11.07', 'learning_rate': '1.102e-05', 'entropy': '1.309', 'num_tokens': '3.879e+05', 'logits/chosen': '-2.005', 'logits/rejected': '-2.168', 'mean_token_accuracy': '0.6206', 'rewards/chosen': '0.6914', 'rewards/rejected': '-0.6331', 'rewards/accuracies': '0.875', 'rewards/margins': '1.325', 'logps/chosen': '-222.6', 'logps/rejected': '-317', 'epoch': '1.52'}
+2026-09-30T04:26:38.451Z 
+2026-09-30T04:26:41.493Z  76%|███████▌  | 76/100 [04:06<01:30,  3.76s/it]
+2026-09-30T04:26:41.494Z  77%|███████▋  | 77/100 [04:09<01:21,  3.55s/it]
+2026-09-30T04:26:41.494Z                                                 
+2026-09-30T04:26:41.495Z {'loss': '0.1952', 'grad_norm': '5.263', 'learning_rate': '1.031e-05', 'entropy': '1.204', 'num_tokens': '3.928e+05', 'logits/chosen': '-2.216', 'logits/rejected': '-2.528', 'mean_token_accuracy': '0.6921', 'rewards/chosen': '0.7365', 'rewards/rejected': '-2.308', 'rewards/accuracies': '1', 'rewards/margins': '3.045', 'logps/chosen': '-219.8', 'logps/rejected': '-306.1', 'epoch': '1.54'}
+2026-09-30T04:26:41.497Z 
+2026-09-30T04:26:44.508Z  77%|███████▋  | 77/100 [04:09<01:21,  3.55s/it]
+2026-09-30T04:26:44.509Z  78%|███████▊  | 78/100 [04:12<01:14,  3.39s/it]
+2026-09-30T04:26:44.510Z                                                 
+2026-09-30T04:26:44.511Z {'loss': '0.4722', 'grad_norm': '13.75', 'learning_rate': '9.608e-06', 'entropy': '1.343', 'num_tokens': '3.974e+05', 'logits/chosen': '-2.029', 'logits/rejected': '-1.906', 'mean_token_accuracy': '0.6494', 'rewards/chosen': '0.4236', 'rewards/rejected': '-0.2817', 'rewards/accuracies': '0.875', 'rewards/margins': '0.7053', 'logps/chosen': '-255.5', 'logps/rejected': '-171.7', 'epoch': '1.56'}
+2026-09-30T04:26:44.513Z 
+2026-09-30T04:26:47.971Z  78%|███████▊  | 78/100 [04:12<01:14,  3.39s/it]
+2026-09-30T04:26:47.972Z  79%|███████▉  | 79/100 [04:16<01:11,  3.41s/it]
+2026-09-30T04:26:47.974Z                                                 
+2026-09-30T04:26:47.974Z {'loss': '0.5357', 'grad_norm': '17.84', 'learning_rate': '8.93e-06', 'entropy': '1.384', 'num_tokens': '4.034e+05', 'logits/chosen': '-1.805', 'logits/rejected': '-1.671', 'mean_token_accuracy': '0.6658', 'rewards/chosen': '0.5714', 'rewards/rejected': '-0.2796', 'rewards/accuracies': '0.625', 'rewards/margins': '0.8509', 'logps/chosen': '-341.4', 'logps/rejected': '-368.5', 'epoch': '1.58'}
+2026-09-30T04:26:47.975Z 
+2026-09-30T04:26:51.328Z  79%|███████▉  | 79/100 [04:16<01:11,  3.41s/it]
+2026-09-30T04:26:51.331Z  80%|████████  | 80/100 [04:19<01:07,  3.39s/it]
+2026-09-30T04:26:51.331Z                                                 
+2026-09-30T04:26:51.332Z {'loss': '0.3324', 'grad_norm': '8.519', 'learning_rate': '8.272e-06', 'entropy': '1.743', 'num_tokens': '4.093e+05', 'logits/chosen': '-2.113', 'logits/rejected': '-2.171', 'mean_token_accuracy': '0.5666', 'rewards/chosen': '0.8879', 'rewards/rejected': '-0.6674', 'rewards/accuracies': '0.875', 'rewards/margins': '1.555', 'logps/chosen': '-453.7', 'logps/rejected': '-352.5', 'epoch': '1.6'}
+2026-09-30T04:26:51.333Z 
+2026-09-30T04:26:53.815Z  80%|████████  | 80/100 [04:19<01:07,  3.39s/it]
+2026-09-30T04:26:53.816Z  81%|████████  | 81/100 [04:21<00:59,  3.12s/it]
+2026-09-30T04:26:53.817Z                                                 
+2026-09-30T04:26:53.819Z {'loss': '0.3947', 'grad_norm': '10.98', 'learning_rate': '7.634e-06', 'entropy': '1.274', 'num_tokens': '4.137e+05', 'logits/chosen': '-2.702', 'logits/rejected': '-2.911', 'mean_token_accuracy': '0.6164', 'rewards/chosen': '0.2667', 'rewards/rejected': '-1.424', 'rewards/accuracies': '0.75', 'rewards/margins': '1.691', 'logps/chosen': '-203.2', 'logps/rejected': '-255.6', 'epoch': '1.62'}
+2026-09-30T04:26:53.820Z 
+2026-09-30T04:26:57.134Z  81%|████████  | 81/100 [04:21<00:59,  3.12s/it]
+2026-09-30T04:26:57.135Z  82%|████████▏ | 82/100 [04:25<00:57,  3.18s/it]
+2026-09-30T04:26:57.137Z                                                 
+2026-09-30T04:26:57.138Z {'loss': '0.4285', 'grad_norm': '14.77', 'learning_rate': '7.017e-06', 'entropy': '1.37', 'num_tokens': '4.195e+05', 'logits/chosen': '-1.821', 'logits/rejected': '-2.483', 'mean_token_accuracy': '0.6269', 'rewards/chosen': '0.922', 'rewards/rejected': '-0.9058', 'rewards/accuracies': '0.875', 'rewards/margins': '1.828', 'logps/chosen': '-375.2', 'logps/rejected': '-275.9', 'epoch': '1.64'}
+2026-09-30T04:26:57.140Z 
+2026-09-30T04:27:00.603Z  82%|████████▏ | 82/100 [04:25<00:57,  3.18s/it]
+2026-09-30T04:27:00.605Z  83%|████████▎ | 83/100 [04:28<00:55,  3.27s/it]
+2026-09-30T04:27:00.606Z                                                 
+2026-09-30T04:27:00.608Z {'loss': '0.2072', 'grad_norm': '6.984', 'learning_rate': '6.421e-06', 'entropy': '1.082', 'num_tokens': '4.25e+05', 'logits/chosen': '-2.019', 'logits/rejected': '-1.726', 'mean_token_accuracy': '0.673', 'rewards/chosen': '0.976', 'rewards/rejected': '-1.991', 'rewards/accuracies': '1', 'rewards/margins': '2.967', 'logps/chosen': '-245.8', 'logps/rejected': '-300.3', 'epoch': '1.66'}
+2026-09-30T04:27:00.612Z 
+2026-09-30T04:27:03.176Z  83%|████████▎ | 83/100 [04:28<00:55,  3.27s/it]
+2026-09-30T04:27:03.177Z  84%|████████▍ | 84/100 [04:31<00:48,  3.06s/it]
+2026-09-30T04:27:03.177Z                                                 
+2026-09-30T04:27:03.177Z {'loss': '0.4521', 'grad_norm': '11.33', 'learning_rate': '5.849e-06', 'entropy': '1.355', 'num_tokens': '4.291e+05', 'logits/chosen': '-2.305', 'logits/rejected': '-2.512', 'mean_token_accuracy': '0.6076', 'rewards/chosen': '0.4361', 'rewards/rejected': '-1', 'rewards/accuracies': '0.75', 'rewards/margins': '1.436', 'logps/chosen': '-206.6', 'logps/rejected': '-207.6', 'epoch': '1.68'}
+2026-09-30T04:27:03.178Z 
+2026-09-30T04:27:06.246Z  84%|████████▍ | 84/100 [04:31<00:48,  3.06s/it]
+2026-09-30T04:27:06.247Z  85%|████████▌ | 85/100 [04:34<00:45,  3.06s/it]
+2026-09-30T04:27:06.248Z                                                 
+2026-09-30T04:27:06.250Z {'loss': '0.202', 'grad_norm': '6.738', 'learning_rate': '5.3e-06', 'entropy': '1.311', 'num_tokens': '4.34e+05', 'logits/chosen': '-2.008', 'logits/rejected': '-2.462', 'mean_token_accuracy': '0.6474', 'rewards/chosen': '0.9249', 'rewards/rejected': '-1.201', 'rewards/accuracies': '1', 'rewards/margins': '2.126', 'logps/chosen': '-276.3', 'logps/rejected': '-375.5', 'epoch': '1.7'}
+2026-09-30T04:27:06.251Z 
+2026-09-30T04:27:09.645Z  85%|████████▌ | 85/100 [04:34<00:45,  3.06s/it]
+2026-09-30T04:27:09.646Z  86%|████████▌ | 86/100 [04:37<00:44,  3.16s/it]
+2026-09-30T04:27:09.647Z                                                 
+2026-09-30T04:27:09.647Z {'loss': '0.3119', 'grad_norm': '8.396', 'learning_rate': '4.775e-06', 'entropy': '1.437', 'num_tokens': '4.392e+05', 'logits/chosen': '-2.505', 'logits/rejected': '-2.35', 'mean_token_accuracy': '0.6109', 'rewards/chosen': '0.6956', 'rewards/rejected': '-1.271', 'rewards/accuracies': '1', 'rewards/margins': '1.967', 'logps/chosen': '-298.5', 'logps/rejected': '-268', 'epoch': '1.72'}
+2026-09-30T04:27:09.648Z 
+2026-09-30T04:27:12.756Z  86%|████████▌ | 86/100 [04:37<00:44,  3.16s/it]
+2026-09-30T04:27:12.758Z  87%|████████▋ | 87/100 [04:40<00:40,  3.15s/it]
+2026-09-30T04:27:12.758Z                                                 
+2026-09-30T04:27:12.759Z {'loss': '0.2712', 'grad_norm': '7.54', 'learning_rate': '4.274e-06', 'entropy': '0.9975', 'num_tokens': '4.434e+05', 'logits/chosen': '-2.472', 'logits/rejected': '-2.407', 'mean_token_accuracy': '0.7455', 'rewards/chosen': '0.4004', 'rewards/rejected': '-1.388', 'rewards/accuracies': '0.875', 'rewards/margins': '1.788', 'logps/chosen': '-115', 'logps/rejected': '-276.6', 'epoch': '1.74'}
+2026-09-30T04:27:12.760Z 
+2026-09-30T04:27:16.349Z  87%|████████▋ | 87/100 [04:40<00:40,  3.15s/it]
+2026-09-30T04:27:16.350Z  88%|████████▊ | 88/100 [04:44<00:39,  3.28s/it]
+2026-09-30T04:27:16.352Z                                                 
+2026-09-30T04:27:16.354Z {'loss': '0.2614', 'grad_norm': '9.766', 'learning_rate': '3.799e-06', 'entropy': '1.316', 'num_tokens': '4.489e+05', 'logits/chosen': '-2.276', 'logits/rejected': '-2.272', 'mean_token_accuracy': '0.6066', 'rewards/chosen': '0.6695', 'rewards/rejected': '-1.78', 'rewards/accuracies': '0.875', 'rewards/margins': '2.449', 'logps/chosen': '-199.7', 'logps/rejected': '-356.8', 'epoch': '1.76'}
+2026-09-30T04:27:16.355Z 
+2026-09-30T04:27:19.667Z  88%|████████▊ | 88/100 [04:44<00:39,  3.28s/it]
+2026-09-30T04:27:19.668Z  89%|████████▉ | 89/100 [04:47<00:36,  3.29s/it]
+2026-09-30T04:27:19.668Z                                                 
+2026-09-30T04:27:19.671Z {'loss': '0.3509', 'grad_norm': '8.617', 'learning_rate': '3.349e-06', 'entropy': '1.429', 'num_tokens': '4.55e+05', 'logits/chosen': '-1.944', 'logits/rejected': '-2.059', 'mean_token_accuracy': '0.6687', 'rewards/chosen': '0.4189', 'rewards/rejected': '-0.8114', 'rewards/accuracies': '1', 'rewards/margins': '1.23', 'logps/chosen': '-322.8', 'logps/rejected': '-297.6', 'epoch': '1.78'}
+2026-09-30T04:27:19.671Z 
+2026-09-30T04:27:22.534Z  89%|████████▉ | 89/100 [04:47<00:36,  3.29s/it]
+2026-09-30T04:27:22.535Z  90%|█████████ | 90/100 [04:50<00:31,  3.16s/it]
+2026-09-30T04:27:22.536Z                                                 
+2026-09-30T04:27:22.537Z {'loss': '0.6792', 'grad_norm': '16.03', 'learning_rate': '2.926e-06', 'entropy': '1.188', 'num_tokens': '4.595e+05', 'logits/chosen': '-2.334', 'logits/rejected': '-2.374', 'mean_token_accuracy': '0.6608', 'rewards/chosen': '0.2194', 'rewards/rejected': '-0.1019', 'rewards/accuracies': '0.5', 'rewards/margins': '0.3213', 'logps/chosen': '-179.7', 'logps/rejected': '-177.4', 'epoch': '1.8'}
+2026-09-30T04:27:22.539Z 
+2026-09-30T04:27:25.198Z  90%|█████████ | 90/100 [04:50<00:31,  3.16s/it]
+2026-09-30T04:27:25.200Z  91%|█████████ | 91/100 [04:53<00:27,  3.01s/it]
+2026-09-30T04:27:25.201Z                                                 
+2026-09-30T04:27:25.202Z {'loss': '0.2876', 'grad_norm': '6.774', 'learning_rate': '2.53e-06', 'entropy': '1.298', 'num_tokens': '4.637e+05', 'logits/chosen': '-2.716', 'logits/rejected': '-3.05', 'mean_token_accuracy': '0.6856', 'rewards/chosen': '0.6971', 'rewards/rejected': '-0.643', 'rewards/accuracies': '1', 'rewards/margins': '1.34', 'logps/chosen': '-211.9', 'logps/rejected': '-185.9', 'epoch': '1.82'}
+2026-09-30T04:27:25.202Z 
+2026-09-30T04:27:28.762Z  91%|█████████ | 91/100 [04:53<00:27,  3.01s/it]
+2026-09-30T04:27:28.763Z  92%|█████████▏| 92/100 [04:56<00:25,  3.18s/it]
+2026-09-30T04:27:28.764Z                                                 
+2026-09-30T04:27:28.766Z {'loss': '0.2804', 'grad_norm': '9.141', 'learning_rate': '2.161e-06', 'entropy': '1.502', 'num_tokens': '4.694e+05', 'logits/chosen': '-2.145', 'logits/rejected': '-2.43', 'mean_token_accuracy': '0.5983', 'rewards/chosen': '0.6236', 'rewards/rejected': '-0.9947', 'rewards/accuracies': '1', 'rewards/margins': '1.618', 'logps/chosen': '-398.4', 'logps/rejected': '-397.8', 'epoch': '1.84'}
+2026-09-30T04:27:28.768Z 
+2026-09-30T04:27:31.914Z  92%|█████████▏| 92/100 [04:56<00:25,  3.18s/it]
+2026-09-30T04:27:31.914Z  93%|█████████▎| 93/100 [05:00<00:22,  3.17s/it]
+2026-09-30T04:27:31.916Z                                                 
+2026-09-30T04:27:31.918Z {'loss': '0.1678', 'grad_norm': '5.337', 'learning_rate': '1.82e-06', 'entropy': '0.9611', 'num_tokens': '4.749e+05', 'logits/chosen': '-1.873', 'logits/rejected': '-2.2', 'mean_token_accuracy': '0.6982', 'rewards/chosen': '1.297', 'rewards/rejected': '-0.7831', 'rewards/accuracies': '1', 'rewards/margins': '2.08', 'logps/chosen': '-220.7', 'logps/rejected': '-252.7', 'epoch': '1.86'}
+2026-09-30T04:27:31.921Z 
+2026-09-30T04:27:34.958Z  93%|█████████▎| 93/100 [05:00<00:22,  3.17s/it]
+2026-09-30T04:27:34.959Z  94%|█████████▍| 94/100 [05:03<00:18,  3.13s/it]
+2026-09-30T04:27:34.960Z                                                 
+2026-09-30T04:27:34.960Z {'loss': '0.2874', 'grad_norm': '7.689', 'learning_rate': '1.508e-06', 'entropy': '1.351', 'num_tokens': '4.8e+05', 'logits/chosen': '-1.596', 'logits/rejected': '-2.181', 'mean_token_accuracy': '0.6179', 'rewards/chosen': '0.21', 'rewards/rejected': '-1.327', 'rewards/accuracies': '1', 'rewards/margins': '1.537', 'logps/chosen': '-200.9', 'logps/rejected': '-303.4', 'epoch': '1.88'}
+2026-09-30T04:27:34.961Z 
+2026-09-30T04:27:38.377Z  94%|█████████▍| 94/100 [05:03<00:18,  3.13s/it]
+2026-09-30T04:27:38.378Z  95%|█████████▌| 95/100 [05:06<00:16,  3.22s/it]
+2026-09-30T04:27:38.380Z                                                 
+2026-09-30T04:27:38.382Z {'loss': '0.2807', 'grad_norm': '9.51', 'learning_rate': '1.224e-06', 'entropy': '1.189', 'num_tokens': '4.855e+05', 'logits/chosen': '-2.071', 'logits/rejected': '-2.237', 'mean_token_accuracy': '0.634', 'rewards/chosen': '0.6652', 'rewards/rejected': '-0.9741', 'rewards/accuracies': '1', 'rewards/margins': '1.639', 'logps/chosen': '-308', 'logps/rejected': '-218.3', 'epoch': '1.9'}
+2026-09-30T04:27:38.383Z 
+2026-09-30T04:27:41.541Z  95%|█████████▌| 95/100 [05:06<00:16,  3.22s/it]
+2026-09-30T04:27:41.542Z  96%|█████████▌| 96/100 [05:09<00:12,  3.20s/it]
+2026-09-30T04:27:41.543Z                                                 
+2026-09-30T04:27:41.544Z {'loss': '0.3563', 'grad_norm': '11.1', 'learning_rate': '9.685e-07', 'entropy': '1.487', 'num_tokens': '4.908e+05', 'logits/chosen': '-2.751', 'logits/rejected': '-2.641', 'mean_token_accuracy': '0.6172', 'rewards/chosen': '1.172', 'rewards/rejected': '-0.4277', 'rewards/accuracies': '0.875', 'rewards/margins': '1.6', 'logps/chosen': '-378.5', 'logps/rejected': '-301.7', 'epoch': '1.92'}
+2026-09-30T04:27:41.545Z 
+2026-09-30T04:27:44.505Z  96%|█████████▌| 96/100 [05:09<00:12,  3.20s/it]
+2026-09-30T04:27:44.506Z  97%|█████████▋| 97/100 [05:12<00:09,  3.13s/it]
+2026-09-30T04:27:44.508Z                                                 
+2026-09-30T04:27:44.511Z {'loss': '0.2171', 'grad_norm': '6.72', 'learning_rate': '7.426e-07', 'entropy': '1.286', 'num_tokens': '4.959e+05', 'logits/chosen': '-1.967', 'logits/rejected': '-2.056', 'mean_token_accuracy': '0.6205', 'rewards/chosen': '0.8295', 'rewards/rejected': '-0.8797', 'rewards/accuracies': '1', 'rewards/margins': '1.709', 'logps/chosen': '-223.9', 'logps/rejected': '-277.1', 'epoch': '1.94'}
+2026-09-30T04:27:44.512Z 
+2026-09-30T04:27:47.517Z  97%|█████████▋| 97/100 [05:12<00:09,  3.13s/it]
+2026-09-30T04:27:47.519Z  98%|█████████▊| 98/100 [05:15<00:06,  3.10s/it]
+2026-09-30T04:27:47.520Z                                                 
+2026-09-30T04:27:47.521Z {'loss': '0.5081', 'grad_norm': '12.63', 'learning_rate': '5.463e-07', 'entropy': '1.483', 'num_tokens': '5.009e+05', 'logits/chosen': '-2.02', 'logits/rejected': '-2.092', 'mean_token_accuracy': '0.5979', 'rewards/chosen': '0.3392', 'rewards/rejected': '-0.2749', 'rewards/accuracies': '0.75', 'rewards/margins': '0.6141', 'logps/chosen': '-166.5', 'logps/rejected': '-204', 'epoch': '1.96'}
+2026-09-30T04:27:47.523Z 
+2026-09-30T04:27:50.992Z  98%|█████████▊| 98/100 [05:15<00:06,  3.10s/it]
+2026-09-30T04:27:50.993Z  99%|█████████▉| 99/100 [05:19<00:03,  3.21s/it]
+2026-09-30T04:27:50.993Z                                                 
+2026-09-30T04:27:50.995Z {'loss': '0.2745', 'grad_norm': '7.553', 'learning_rate': '3.798e-07', 'entropy': '1.365', 'num_tokens': '5.07e+05', 'logits/chosen': '-1.91', 'logits/rejected': '-2.265', 'mean_token_accuracy': '0.6089', 'rewards/chosen': '0.701', 'rewards/rejected': '-0.7671', 'rewards/accuracies': '1', 'rewards/margins': '1.468', 'logps/chosen': '-488.7', 'logps/rejected': '-286.3', 'epoch': '1.98'}
+2026-09-30T04:27:50.995Z 
+2026-09-30T04:27:54.008Z  99%|█████████▉| 99/100 [05:19<00:03,  3.21s/it]
+2026-09-30T04:27:54.009Z 100%|██████████| 100/100 [05:22<00:00,  3.15s/it]
+2026-09-30T04:27:54.012Z                                                  
+2026-09-30T04:27:54.013Z {'loss': '0.3253', 'grad_norm': '11.2', 'learning_rate': '2.433e-07', 'entropy': '1.281', 'num_tokens': '5.119e+05', 'logits/chosen': '-2.36', 'logits/rejected': '-2.174', 'mean_token_accuracy': '0.6624', 'rewards/chosen': '0.5309', 'rewards/rejected': '-1.495', 'rewards/accuracies': '0.875', 'rewards/margins': '2.026', 'logps/chosen': '-245.6', 'logps/rejected': '-325.1', 'epoch': '2'}
+2026-09-30T04:27:54.013Z 
+2026-09-30T04:27:55.254Z 100%|██████████| 100/100 [05:22<00:00,  3.15s/it]
+2026-09-30T04:27:55.255Z                                                  
+2026-09-30T04:27:55.255Z {'train_runtime': '323.4', 'train_samples_per_second': '2.474', 'train_steps_per_second': '0.309', 'train_loss': '0.4551', 'epoch': '2'}
+2026-09-30T04:27:55.256Z 
+2026-09-30T04:27:55.261Z 100%|██████████| 100/100 [05:23<00:00,  3.15s/it]
+2026-09-30T04:27:55.263Z 100%|██████████| 100/100 [05:23<00:00,  3.23s/it]
+2026-09-30T04:27:55.265Z ╭───────────────── Soup Training: Qwen/Qwen2.5-0.5B-Instruct ──────────────────╮
+2026-09-30T04:27:55.266Z │ Epoch 2.0/2   100%                                                           │
+2026-09-30T04:27:55.268Z │ Step:  100/100                                                               │
+2026-09-30T04:27:55.270Z │ Loss:  0.3253    LR: 2.43e-07                                                │
+2026-09-30T04:27:55.271Z │ Speed: 0.31 it/s                                                             │
+2026-09-30T04:27:55.272Z │ GPU peak: 5.6/14.6 GB                                                        │
+2026-09-30T04:27:55.274Z │ Grad:  11.1958                                                               │
+2026-09-30T04:27:56.602Z ╰────────────────────────────────── Tesla T4 ──────────────────────────────────╯╭───────────────────────────── Training Complete! ─────────────────────────────╮
+2026-09-30T04:27:56.603Z │ Loss: 0.6931 -> 0.3253                                                       │
+2026-09-30T04:27:56.604Z │ Duration: 5m                                                                 │
+2026-09-30T04:27:56.605Z │ Output: out-lenbal                                                           │
+2026-09-30T04:27:56.606Z │ Run ID: run_20260930_042212_82cb7695                                         │
+2026-09-30T04:27:56.607Z │                                                                              │
+2026-09-30T04:27:56.608Z │ Quick test:  soup chat --model out-lenbal                                    │
+2026-09-30T04:27:56.609Z │ Push to HF:  soup push --model out-lenbal                                    │
+2026-09-30T04:27:56.610Z │ Merge LoRA:  soup merge --adapter out-lenbal                                 │
+2026-09-30T04:27:56.610Z │ Export GGUF: soup export --model out-lenbal                                  │
+2026-09-30T04:27:56.611Z │ Run details: soup runs show run_20260930_042212_82cb7695                     │
+2026-09-30T04:27:56.612Z ╰──────────────────────────────────────────────────────────────────────────────╯
+2026-09-30T04:27:58.901Z [exit code 0]

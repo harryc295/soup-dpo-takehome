@@ -1,0 +1,56 @@
+2026-09-30T04:11:05.433Z $ soup data lint data/raw_500.jsonl --format dpo --model Qwen/Qwen2.5-0.5B-Instruct -o results/lint_raw.json
+2026-09-30T04:11:15.062Z Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+2026-09-30T04:11:17.488Z                               soup data lint (dpo)                              
+2026-09-30T04:11:17.489Z ┏━━━━━━━━━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━┓
+2026-09-30T04:11:17.491Z ┃ Check           ┃ Verdict ┃ Message                ┃ Evidence                ┃
+2026-09-30T04:11:17.491Z ┡━━━━━━━━━━━━━━━━━╇━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━┩
+2026-09-30T04:11:17.493Z │ length_bias     │ MINOR   │ effect size (Cohen's   │ mean chosen=160.4, mean │
+2026-09-30T04:11:17.495Z │                 │         │ d) = -0.355 (rejected  │ rejected=219.0          │
+2026-09-30T04:11:17.496Z │                 │         │ longer than chosen);   │                         │
+2026-09-30T04:11:17.499Z │                 │         │ chosen is longer in    │                         │
+2026-09-30T04:11:17.500Z │                 │         │ 29.4% of rows          │                         │
+2026-09-30T04:11:17.502Z │ identical_pairs │ OK      │ 0/500 rows (0.0%) have │                         │
+2026-09-30T04:11:17.503Z │                 │         │ chosen == rejected     │                         │
+2026-09-30T04:11:17.505Z │                 │         │ (zero preference       │                         │
+2026-09-30T04:11:17.506Z │                 │         │ signal)                │                         │
+2026-09-30T04:11:17.507Z │ near_duplicates │ OK      │ near-dup check skipped │ pip install             │
+2026-09-30T04:11:17.508Z │                 │         │ (datasketch not        │ "soup-cli[data]" to     │
+2026-09-30T04:11:17.509Z │                 │         │ installed)             │ enable                  │
+2026-09-30T04:11:17.510Z │ prompt_leak     │ OK      │ 0/500 rows (0.0%) have │ min_prompt_len=40       │
+2026-09-30T04:11:17.510Z │                 │         │ the prompt echoed      │                         │
+2026-09-30T04:11:17.512Z │                 │         │ verbatim inside the    │                         │
+2026-09-30T04:11:17.513Z │                 │         │ completion             │                         │
+2026-09-30T04:11:17.514Z └─────────────────┴─────────┴────────────────────────┴─────────────────────────┘
+2026-09-30T04:11:17.517Z ╭────────── overall ───────────╮
+2026-09-30T04:11:17.518Z │ MINOR — 500/500 rows scanned │
+2026-09-30T04:11:17.518Z ╰──────────────────────────────╯
+2026-09-30T04:11:17.519Z Wrote results/lint_raw.json
+2026-09-30T04:11:18.753Z [exit code 0]
+2026-09-30T04:11:18.755Z $ soup data lint data/train.jsonl --format dpo --model Qwen/Qwen2.5-0.5B-Instruct -o results/lint_train.json
+2026-09-30T04:11:27.034Z Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+2026-09-30T04:11:28.899Z                               soup data lint (dpo)                              
+2026-09-30T04:11:28.900Z ┏━━━━━━━━━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━┓
+2026-09-30T04:11:28.902Z ┃ Check           ┃ Verdict ┃ Message                ┃ Evidence                ┃
+2026-09-30T04:11:28.903Z ┡━━━━━━━━━━━━━━━━━╇━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━┩
+2026-09-30T04:11:28.904Z │ length_bias     │ OK      │ effect size (Cohen's   │ mean chosen=176.7, mean │
+2026-09-30T04:11:28.906Z │                 │         │ d) = -0.270 (rejected  │ rejected=223.2          │
+2026-09-30T04:11:28.909Z │                 │         │ longer than chosen);   │                         │
+2026-09-30T04:11:28.910Z │                 │         │ chosen is longer in    │                         │
+2026-09-30T04:11:28.911Z │                 │         │ 35.0% of rows          │                         │
+2026-09-30T04:11:28.912Z │ identical_pairs │ OK      │ 0/400 rows (0.0%) have │                         │
+2026-09-30T04:11:28.914Z │                 │         │ chosen == rejected     │                         │
+2026-09-30T04:11:28.915Z │                 │         │ (zero preference       │                         │
+2026-09-30T04:11:28.918Z │                 │         │ signal)                │                         │
+2026-09-30T04:11:28.919Z │ near_duplicates │ OK      │ near-dup check skipped │ pip install             │
+2026-09-30T04:11:28.919Z │                 │         │ (datasketch not        │ "soup-cli[data]" to     │
+2026-09-30T04:11:28.921Z │                 │         │ installed)             │ enable                  │
+2026-09-30T04:11:28.922Z │ prompt_leak     │ OK      │ 0/400 rows (0.0%) have │ min_prompt_len=40       │
+2026-09-30T04:11:28.924Z │                 │         │ the prompt echoed      │                         │
+2026-09-30T04:11:28.928Z │                 │         │ verbatim inside the    │                         │
+2026-09-30T04:11:28.929Z │                 │         │ completion             │                         │
+2026-09-30T04:11:28.930Z └─────────────────┴─────────┴────────────────────────┴─────────────────────────┘
+2026-09-30T04:11:28.932Z ╭───────── overall ─────────╮
+2026-09-30T04:11:28.933Z │ OK — 400/400 rows scanned │
+2026-09-30T04:11:28.934Z ╰───────────────────────────╯
+2026-09-30T04:11:28.935Z Wrote results/lint_train.json
+2026-09-30T04:11:30.155Z [exit code 0]

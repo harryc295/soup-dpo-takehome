@@ -11,3 +11,4 @@ task_eval.jsonl
 results.zip
 results_core.zip
 .impeccable/
+local_full*

@@ -23,13 +23,16 @@ numbers in the report against the raw logs before submitting.
 - It assumed Colab's Python would satisfy `soup-cli`'s `<3.13` pin. The first T4 attempt
   failed at install. The notebook now uses the same `--ignore-requires-python` fallback
   as Soup's own proof notebook.
+- The notebook copied the last checkpoint's `trainer_state.json` with a numeric sort on the
+  wrong field, so it picked step 75 instead of step 100. That was caught when rereading the evidence
+  after the run. The sort is fixed, and the README says which files cover all 100 steps.
 - Several comments in Soup's code are out of date (DPO "adapters disabled /
   `null_ref_context`", stream_layers "batch 1, no accumulation"). Claims were checked
   against the code that runs, not the comments.
 
 **What I checked myself**
 - The headline numbers against the raw files: memory peaks in `soup.db` and
-  `results/nvidia_smi.csv`, the skipped fp16 steps in `results/trainer_state.json`, and the
+  `results/nvidia_smi.csv`, the skipped fp16 steps in `results/logs/06_train.log` and `results/trainer_state.json`, and the
   held-out accuracy and length split in `results/verify.json`.
 - Both runs, rehearsal (RTX 4060 Ti) and T4, telling the same story.
 - The Soup patches: read the diffs and the test results, including the check that the new

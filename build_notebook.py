@@ -138,7 +138,7 @@ md("## 6. Silent-failure evidence (Part 3)")
 code("""
 run("python silent_checks.py --run out-dpo --db soup.db --out results/silent_checks.json", "09_silent_checks")
 # the trainer's own DPO metrics, copied out of the checkpoint before anything else touches them
-run("cp $(ls -d out-dpo/checkpoint-* | sort -t- -k2 -n | tail -1)/trainer_state.json results/trainer_state.json",
+run("cp $(ls -d out-dpo/checkpoint-* | sort -V | tail -1)/trainer_state.json results/trainer_state.json",
     "09_silent_checks")
 """)
 

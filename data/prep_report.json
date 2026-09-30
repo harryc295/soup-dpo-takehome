@@ -1,0 +1,19 @@
+{
+  "source": "argilla/distilabel-intel-orca-dpo-pairs",
+  "seed": 0,
+  "raw_rows": 500,
+  "raw_status_counts": {
+    "tie": 168,
+    "unchanged": 265,
+    "swapped": 67
+  },
+  "rows_scanned_for_500_clean": 741,
+  "dropped": {
+    "tie": 237,
+    "identical": 0,
+    "empty": 0,
+    "gsm8k_train_overlap": 4
+  },
+  "train_rows": 400,
+  "heldout_rows": 100
+}

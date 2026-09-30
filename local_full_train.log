@@ -1,0 +1,59 @@
+2026-09-30T04:03:58.244Z Loading config from local_full.yaml...
+2026-09-30T04:03:59.682Z ┌────────────────────────────── Training Setup ───────────────────────────────┐
+2026-09-30T04:03:59.700Z │ Device:  NVIDIA GeForce RTX 4060 Ti                                         │
+2026-09-30T04:03:59.719Z │ Memory:  8.0 GB                                                             │
+2026-09-30T04:03:59.738Z │ Model:   Qwen/Qwen2.5-0.5B-Instruct                                         │
+2026-09-30T04:03:59.755Z │ Task:    dpo                                                                │
+2026-09-30T04:03:59.774Z │ Backend: transformers                                                       │
+2026-09-30T04:03:59.792Z │ LoRA:    r=16, alpha=32                                                     │
+2026-09-30T04:03:59.810Z │ Quant:   none                                                               │
+2026-09-30T04:03:59.828Z │ Seed:    42                                                                 │
+2026-09-30T04:03:59.846Z └─────────────────────────────────────────────────────────────────────────────┘
+2026-09-30T04:03:59.864Z Loading dataset...
+2026-09-30T04:03:59.882Z Loaded: 400 train samples
+2026-09-30T04:03:59.900Z Run ID: run_20260930_050359_c16557be
+2026-09-30T04:03:59.917Z Setting up model + trainer...
+2026-09-30T04:04:03.489Z W0930 05:04:03.468000 32088 Lib\site-packages\torch\utils\flop_counter.py:29] triton not found; flop counting will not work for triton kernels
+2026-09-30T04:04:04.106Z Loading tokenizer: Qwen/Qwen2.5-0.5B-Instruct
+2026-09-30T04:04:04.494Z Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+2026-09-30T04:04:05.308Z Fetching 6 files:   0%|          | 0/6 [00:00<?, ?it/s]Fetching 6 files: 100%|██████████| 6/6 [00:00<00:00, 2387.20it/s]
+2026-09-30T04:04:05.326Z ┌────────────────────── Layer streaming disk pre-flight ──────────────────────┐
+2026-09-30T04:04:05.348Z │ HF/local source: 0.99 GB                                                    │
+2026-09-30T04:04:05.366Z │ Soup materialized copy: 0.00 GB (no write required)                         │
+2026-09-30T04:04:05.384Z │ Layer-shard cache: 0.99 GB (reusable)                                       │
+2026-09-30T04:04:05.402Z │ Projected total on disk: 1.98 GB                                            │
+2026-09-30T04:04:05.420Z │ Additional writes before training: 0.00 GB                                  │
+2026-09-30T04:04:05.442Z └─────────────────────────────────────────────────────────────────────────────┘
+2026-09-30T04:04:05.461Z Preparing layer shards -> 
+2026-09-30T04:04:05.480Z C:\Users\corco\.soup\layer-stream\Qwen__Qwen2.5-0.5B-Instruct
+2026-09-30T04:04:05.690Z ┌────────────────────────── training.stream_layers ───────────────────────────┐
+2026-09-30T04:04:05.708Z │ Layer streaming BETA — arch qwen2, tier ram                                 │
+2026-09-30T04:04:05.726Z │   base store   0.72 GB across 24 layers (pinned)                            │
+2026-09-30T04:04:05.742Z │   VRAM buffers 2 x 30 MB + 1 x 0 MB large-layer slot = 60 MB                │
+2026-09-30T04:04:05.760Z │   resident     272 MB extras + adapters                                     │
+2026-09-30T04:04:05.777Z │   peak VRAM    ~4.88 GB at batch 2 x seq 512 (4 rows — chosen+rejected are  │
+2026-09-30T04:04:05.795Z │ one concatenated tensor) (logits 4.36 GB)                                   │
+2026-09-30T04:04:05.815Z │   free VRAM    7.40 GB                                                      │
+2026-09-30T04:04:05.833Z │   forecast     9631-14163 tok/s — a compute-bound bound, not a promise      │
+2026-09-30T04:04:05.851Z │                (from 41.98 TFLOPS measured on this card now using bfloat16  │
+2026-09-30T04:04:05.869Z │ @ 2565 MHz)                                                                 │
+2026-09-30T04:04:05.888Z │   ! accumulating 4x at batch 2: the base is re-read once per micro-batch.   │
+2026-09-30T04:04:05.906Z │ Per token that is free, but reaching effective batch 8 by raising           │
+2026-09-30T04:04:05.925Z │ training.batch_size instead measured ~2.5x faster. Accumulation holds peak  │
+2026-09-30T04:04:05.942Z │ VRAM flat, so raise batch_size while the budget above allows, then          │
+2026-09-30T04:04:05.960Z │ accumulate for the rest.                                                    │
+2026-09-30T04:04:05.978Z └─────────────────────────────────────────────────────────────────────────────┘
+2026-09-30T04:04:05.995Z Layer streaming is BETA: slower than resident training, but this model may not 
+2026-09-30T04:04:06.013Z run resident on this card at all.
+2026-09-30T04:04:06.031Z expandable_segments allocator hint not enabled: Windows ignores it — torch 
+2026-09-30T04:04:06.049Z warns and carries on
+2026-09-30T04:04:06.070Z [transformers] `torch_dtype` is deprecated! Use `dtype` instead!
+2026-09-30T04:04:06.555Z Layer streaming ready: 24 layers, 0.72 GB pinned RAM store, 2 x 30 MB decoder 
+2026-09-30T04:04:06.575Z buffers + 1 x 0 MB large-layer slot
+2026-09-30T04:04:06.600Z LoRA applied: 2,162,688 trainable / 494,032,768 total (0.44%)
+2026-09-30T04:04:08.134Z Tokenizing train dataset:   0%|          | 0/400 [00:00<?, ? examples/s]Tokenizing train dataset:  16%|█▌        | 62/400 [00:00<00:00, 591.08 examples/s]Tokenizing train dataset:  33%|███▎      | 131/400 [00:00<00:00, 642.05 examples/s]Tokenizing train dataset:  52%|█████▏    | 208/400 [00:00<00:00, 697.93 examples/s]Tokenizing train dataset:  70%|██████▉   | 279/400 [00:00<00:00, 692.48 examples/s]Tokenizing train dataset:  94%|█████████▍| 377/400 [00:00<00:00, 668.72 examples/s]Tokenizing train dataset: 100%|██████████| 400/400 [00:00<00:00, 631.95 examples/s]
+2026-09-30T04:04:08.152Z [transformers] The model is already on multiple devices. Skipping the move to device specified in `args`.
+2026-09-30T04:04:08.198Z Map:   0%|          | 0/400 [00:00<?, ? examples/s]Map: 100%|██████████| 400/400 [00:00<00:00, 7579.43 examples/s]
+2026-09-30T04:04:08.216Z Training started!
+2026-09-30T04:04:08.235Z 
+2026-09-30T04:04:08.254Z [transformers] The tokenizer has new PAD/BOS/EOS tokens that differ from the model config and generation config. The model config and generation config were aligned accordingly, being updated with the tokenizer's values. Updated tokens: {'bos_token_id': None, 'pad_token_id': 151643}.

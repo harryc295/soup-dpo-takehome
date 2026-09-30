@@ -9,6 +9,8 @@ Outputs (data/):
   raw_500.jsonl     the first 500 rows sampled as-is (seed 0), before any cleaning
   train.jsonl       400 cleaned rows used for training
   heldout.jsonl     100 cleaned rows never trained on, used by verify_training.py
+  train_lenbal.jsonl  400 cleaned rows, 200 where chosen is longer and 200 where it is
+                    shorter: the control run for the length confound (same heldout set)
   prep_report.json  what was dropped and why
 
 Cleaning drops ~30% of rows (mostly ties), so sampling continues past the first
@@ -60,21 +62,28 @@ def main():
     write(OUT / "raw_500.jsonl", raw)
 
     dropped = {"tie": 0, "identical": 0, "empty": 0, "gsm8k_train_overlap": 0}
+
+    def drop_reason(r):
+        c, j = r["chosen"][0]["content"].strip(), r["rejected"][0]["content"].strip()
+        if r["_status"] == "tie":
+            return "tie"
+        if not c or not j:
+            return "empty"
+        if c == j:
+            return "identical"
+        if r["_in_gsm8k_train"]:
+            return "gsm8k_train_overlap"
+        return None
+
     clean, seen = [], 0
     for i in order:
         if len(clean) == N_CLEAN:
             break
         r = to_row(ds[i])
         seen += 1
-        c, j = r["chosen"][0]["content"].strip(), r["rejected"][0]["content"].strip()
-        if r["_status"] == "tie":
-            dropped["tie"] += 1
-        elif not c or not j:
-            dropped["empty"] += 1
-        elif c == j:
-            dropped["identical"] += 1
-        elif r["_in_gsm8k_train"]:
-            dropped["gsm8k_train_overlap"] += 1
+        reason = drop_reason(r)
+        if reason:
+            dropped[reason] += 1
         else:
             clean.append(r)
 
@@ -82,6 +91,21 @@ def main():
     heldout, train = clean[:N_HELDOUT], clean[N_HELDOUT:]
     write(OUT / "train.jsonl", train)
     write(OUT / "heldout.jsonl", heldout)
+
+    # Length-balanced control: same cleaning, same heldout, but chosen is the longer
+    # answer in exactly half the rows (the main set has chosen shorter in ~65%).
+    half = (N_CLEAN - N_HELDOUT) // 2
+    buckets = {True: [], False: []}
+    extra = (to_row(ds[i]) for i in order[seen:])
+    for r in train + [r for r in extra if not drop_reason(r)]:
+        longer = len(r["chosen"][0]["content"]) > len(r["rejected"][0]["content"])
+        if len(buckets[longer]) < half:
+            buckets[longer].append(r)
+        if all(len(b) == half for b in buckets.values()):
+            break
+    lenbal = buckets[True] + buckets[False]
+    random.Random(SEED + 2).shuffle(lenbal)
+    write(OUT / "train_lenbal.jsonl", lenbal)
 
     status_counts = {}
     for r in raw:
@@ -95,6 +119,8 @@ def main():
         "dropped": dropped,
         "train_rows": len(train),
         "heldout_rows": len(heldout),
+        "lenbal_rows": len(lenbal),
+        "lenbal_rows_shared_with_train": sum(r in train for r in lenbal),
     }
     (OUT / "prep_report.json").write_text(json.dumps(report, indent=2))
     print(json.dumps(report, indent=2))

@@ -37,7 +37,7 @@ os.makedirs("results/logs", exist_ok=True)
 
 # nvidia-smi sampler for the whole session (raw output, untouched)
 smi = subprocess.Popen(
-    "nvidia-smi --query-gpu=timestamp,name,memory.used,memory.reserved,memory.total,"
+    "nvidia-smi --query-gpu=timestamp,name,memory.used,memory.total,"
     "utilization.gpu,temperature.gpu,power.draw,clocks.sm --format=csv -lms 500 "
     "> results/nvidia_smi.csv",
     shell=True,
@@ -141,6 +141,24 @@ subprocess.run("cp -r out-dpo/adapter_config.json out-dpo/adapter_model.safetens
                "&& zip -qr results_core.zip results", shell=True)
 from google.colab import files
 files.download("results_core.zip")
+""")
+
+md("""
+## 6b. Control run: length-balanced data
+
+The main set has the chosen answer shorter in ~65% of pairs, and DPO sums log-probs over
+tokens, so "prefer shorter" is a cheap shortcut. Same config, same held-out set, but the
+training pairs are length-balanced. If the held-out accuracy gap between "chosen shorter"
+and "chosen longer" shrinks here, the main run's margin was partly length.
+""")
+
+code("""
+run("soup train --config soup_lenbal.yaml -y", "06b_train_lenbal",
+    env={"SOUP_DB_PATH": os.path.abspath("soup_lenbal.db")})
+run("python verify_training.py --adapter out-lenbal --train data/train_lenbal.jsonl "
+    "--out results/verify_lenbal.json", "08b_verify_lenbal")
+run("python silent_checks.py --run out-lenbal --train data/train_lenbal.jsonl --db soup_lenbal.db "
+    "--out results/silent_checks_lenbal.json", "09b_silent_checks_lenbal")
 """)
 
 md("""

@@ -1,0 +1,38 @@
+# Control run: identical to soup.yaml except the training pairs are length-balanced
+# (chosen longer in exactly 50%), to test whether the main run learned length, not quality.
+# DPO + layer streaming on a Colab T4 (16 GB, sm_75, no bf16 -> Soup picks fp16).
+#
+# Model: Qwen2.5-0.5B-Instruct.
+#   - qwen2 is on Soup's streaming allowlist (utils/layer_stream.py SUPPORTED_STREAM_ARCHS).
+#   - Tied embeddings. soup-cli 0.75.1 fails on DPO + an UNTIED lm_head under streaming
+#     (fixed upstream after 0.75.1, changelog 1061), so a tied model is the safe pick.
+#   - Multilingual, so it would also tokenise the real Russian tickets.
+base: Qwen/Qwen2.5-0.5B-Instruct
+task: dpo
+
+data:
+  train: data/train_lenbal.jsonl
+  format: dpo
+  max_length: 512      # Soup caps the prompt at max_length/2 and cuts responses to fit
+  val_split: 0.0       # held-out set lives in data/heldout.jsonl, used by verify_training.py
+
+training:
+  epochs: 2
+  batch_size: 2        # streaming refuses batch_size: auto (the default)
+  gradient_accumulation_steps: 4
+  lr: 5.0e-5
+  dpo_beta: 0.1
+  warmup_ratio: 0.1
+  seed: 42
+  logging_steps: 1
+  save_steps: 25       # DPO reward metrics only reach disk via checkpoint trainer_state.json
+  quantization: none   # default is 4bit, which would stream an NF4 base; 0.5B needs no quantisation
+  stream_layers: true
+  stream_buffers: 2
+  lora:
+    r: 16
+    alpha: 32
+    dropout: 0.0
+    target_modules: [q_proj, k_proj, v_proj, o_proj]
+
+output: ./out-lenbal

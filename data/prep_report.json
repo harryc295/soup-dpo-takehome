@@ -15,5 +15,7 @@
     "gsm8k_train_overlap": 4
   },
   "train_rows": 400,
-  "heldout_rows": 100
+  "heldout_rows": 100,
+  "lenbal_rows": 400,
+  "lenbal_rows_shared_with_train": 348
 }

@@ -32,6 +32,8 @@ code(f"""
 import os, subprocess
 if not os.path.exists("soup-dpo-takehome"):
     subprocess.run(["git", "clone", "{REPO}"], check=True)
+else:
+    subprocess.run(["git", "-C", "soup-dpo-takehome", "pull", "-q"], check=True)
 os.chdir("soup-dpo-takehome")
 os.makedirs("results/logs", exist_ok=True)
 
@@ -74,8 +76,12 @@ def run(cmd, name, env=None):
 md("## 0. Install (pinned) and confirm the card")
 
 code("""
+# soup-cli caps Python at <3.13; Colab now ships a newer interpreter. Soup's own
+# proof notebook uses the same fallback. Logged so the trade-off is visible.
+PY_FLAG = "--ignore-requires-python" if sys.version_info >= (3, 13) else ""
+run(f"python --version && echo 'install flag: {PY_FLAG or 'none'}'", "00_install")
 run("pip uninstall -q -y torchao", "00_install")  # peft raises on Colab's old torchao
-run('pip install -q "soup-cli[train]==0.75.1"', "00_install")
+run(f'pip install -q "soup-cli[train]==0.75.1" {PY_FLAG}', "00_install")
 run("python -c \\"import torch,transformers,trl,peft,soup_cli;"
     "print('torch',torch.__version__,'transformers',transformers.__version__,"
     "'trl',trl.__version__,'peft',peft.__version__,'soup',soup_cli.__version__)\\"", "00_versions")
@@ -182,7 +188,7 @@ for name, adapter in [("trained", "out-dpo"), ("zero", "ctrl-zero"), ("random", 
 md("## 8. Re-run lint with the optional `[data]` extra (was a check skipped?)")
 
 code("""
-run('pip install -q "soup-cli[data]==0.75.1"', "12_lint_with_data_extra")
+run(f'pip install -q "soup-cli[data]==0.75.1" {PY_FLAG}', "12_lint_with_data_extra")
 run("soup data lint data/raw_500.jsonl --format dpo --model Qwen/Qwen2.5-0.5B-Instruct "
     "-o results/lint_raw_with_datasketch.json", "12_lint_with_data_extra")
 """)
